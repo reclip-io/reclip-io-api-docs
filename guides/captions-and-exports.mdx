@@ -1,0 +1,14 @@
+---
+title: "Edit captions and export"
+description: "Save clip edits and render a specific revision."
+---
+
+Read GET /clips/\{id\}. PATCH the same URL with captions_enabled, caption_group_size, caption_style and caption_words. Submit the complete edit payload shown in the API reference. The response returns editor_revision.
+
+Create an export using POST /clips/\{id\}/exports with an Idempotency-Key and:
+
+```json
+{"editor_revision":1}
+```
+
+The service verifies the revision under a database lock, snapshots the edits, and creates a durable export job. If another edit wins first, revision_conflict is returned. The export has its own job status and output assets. Preserve the original clip ID for subsequent edits.

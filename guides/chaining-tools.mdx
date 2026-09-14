@@ -1,0 +1,10 @@
+---
+title: "Chain tools"
+description: "Pass output assets between operations."
+---
+
+For each step, discover its schema, quote the exact input and submit within the user's approved budget. Wait until succeeded, select a compatible output asset, then use its ID in the next request.
+
+Example: AI Clipper → choose an output video → MP4-to-MP3. The second request uses tool mp4_to_mp3 and input \{asset_id, file_name, operation: "extract_mp3"\}.
+
+Do not pass signed URLs when an asset ID is available. Output indexes are not stable semantic identities: inspect MIME type and result metadata before choosing a source. Stop the chain if a job fails, is canceled, or exceeds the authorized budget.

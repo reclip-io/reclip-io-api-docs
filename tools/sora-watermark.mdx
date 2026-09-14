@@ -1,0 +1,49 @@
+---
+title: "Sora Watermark Remover"
+description: "Remove a Sora watermark from generated videos."
+---
+
+Remove a Sora watermark from generated videos.
+
+<Info>Beta implementation. Live provider acceptance remains a release gate; this page does not claim production availability.</Info>
+
+Submit `POST /jobs` with `tool: "sora_watermark"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
+
+Required plan tier: **free**. API access additionally requires an active paid subscription.
+
+| Input field | Required | Type | Details |
+|---|---|---|---|
+| `source_url` | Yes | string | See the full schema below. |
+| `file_name` | Yes | string | See the full schema below. |
+
+## Complete input schema
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "source_url": {
+      "type": "string",
+      "maxLength": 2048,
+      "format": "uri"
+    },
+    "file_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    }
+  },
+  "required": [
+    "source_url",
+    "file_name"
+  ],
+  "additionalProperties": false
+}
+```
+
+Inspect `GET /tools/sora_watermark/catalog` for supported choices. Runtime checks also validate cross-field rules, source ownership and tool-specific URL restrictions. Quote the exact request before submission.
+
+This operation does not advertise an upload policy.
+
+Results are returned through `GET /jobs/{id}`; output assets can be passed to the next tool. [Job lifecycle](/concepts/jobs).

@@ -1,0 +1,15 @@
+---
+title: "Assets and uploads"
+description: "Upload source files and retrieve retained outputs."
+---
+
+1. Create an upload with tool, file_name, mime_type and size_bytes.
+2. PUT the exact bytes to upload_url with the returned headers. Do not send your Reclip API key to the storage URL.
+3. POST /assets/\{id\}/confirm. The server checks the stored content length, content type and ETag.
+4. Use asset_id in a tool job.
+
+Upload authorization lasts 10 minutes. Download URLs last 5 minutes. Persistent state should store asset IDs, not signed URLs.
+
+Ready output assets can become inputs to another compatible tool. Retention follows existing workspace policy; use returned retained_until rather than assuming a fixed number of days. An expired or missing file cannot be recovered by refreshing a signed URL.
+
+Direct source_url inputs are accepted only by tools that advertise them. URL downloads still apply their tool-specific source restrictions and size caps. Arbitrary remote-file import is not a separate v1 endpoint.

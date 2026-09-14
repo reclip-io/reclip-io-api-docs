@@ -1,0 +1,20 @@
+---
+title: "Job lifecycle"
+description: "Asynchronous jobs, progress and outputs."
+---
+
+`POST /jobs` returns HTTP 202 with id, status_url and replayed. Poll `GET /jobs/{id}` at a bounded interval, for example every 5 seconds.
+
+| Status | Meaning |
+|---|---|
+| queued | Waiting for work or scheduled retry |
+| running | Claimed, processing, or cancellation requested |
+| succeeded | Processing completed |
+| failed | Terminal processing failure |
+| canceled | Cancellation completed |
+
+The stage and progress fields provide extra detail. A completed job can contain multiple output assets, and outputs can include text. credits contains estimated and actual amounts; actual can be null before settlement.
+
+Cancellation is best effort. It does not promise immediate termination or a full refund. Poll until terminal state.
+
+List endpoints use page numbers. Jobs use page_size 20. Results are ordered by creation time; concurrent insertions may shift page boundaries.

@@ -1,0 +1,178 @@
+---
+title: "AI Captions"
+description: "Add stylish captions to videos and translate subtitles into another language."
+---
+
+Add stylish captions to videos and translate subtitles into another language.
+
+<Info>Beta implementation. Live provider acceptance remains a release gate; this page does not claim production availability.</Info>
+
+Submit `POST /jobs` with `tool: "ai_captions"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
+
+Required plan tier: **free**. API access additionally requires an active paid subscription.
+
+| Input field | Required | Type | Details |
+|---|---|---|---|
+| `asset_id` | No | string | See the full schema below. |
+| `source_url` | No | string | See the full schema below. |
+| `duration_seconds` | Yes | number | See the full schema below. |
+| `start_seconds` | Yes | number | See the full schema below. |
+| `end_seconds` | No | number | See the full schema below. |
+| `options` | Yes | object | See the full schema below. |
+
+## Complete input schema
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "asset_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "source_url": {
+      "type": "string",
+      "maxLength": 2048,
+      "format": "uri"
+    },
+    "duration_seconds": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 7200
+    },
+    "start_seconds": {
+      "default": 0,
+      "type": "number",
+      "minimum": 0
+    },
+    "end_seconds": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "options": {
+      "type": "object",
+      "properties": {
+        "maximum_source_bytes": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 2000000000
+        },
+        "language": {
+          "type": "string"
+        },
+        "target_language": {
+          "type": "string"
+        },
+        "caption_mode": {
+          "default": "single_word",
+          "type": "string",
+          "enum": [
+            "single_word",
+            "three_word_highlight"
+          ]
+        },
+        "caption_group_size": {
+          "default": 1,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "caption_preset_id": {
+          "default": "lit",
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,39}$"
+        },
+        "caption_style": {
+          "type": "object",
+          "properties": {
+            "font_family": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "font_size": {
+              "type": "integer",
+              "minimum": 24,
+              "maximum": 240
+            },
+            "position_y_percent": {
+              "type": "number",
+              "minimum": 6,
+              "maximum": 94
+            },
+            "base_color": {
+              "type": "string",
+              "pattern": "^#[0-9A-F]{6}$"
+            },
+            "highlight_color": {
+              "type": "string",
+              "pattern": "^#[0-9A-F]{6}$"
+            },
+            "outline_color": {
+              "type": "string",
+              "pattern": "^#[0-9A-F]{6}$"
+            },
+            "outline_width": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 16
+            },
+            "background_color": {
+              "type": "string",
+              "pattern": "^#[0-9A-F]{6}$"
+            },
+            "background_opacity": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "layout_version": {
+              "type": "number",
+              "const": 2
+            },
+            "word_spacing": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 12
+            }
+          },
+          "required": [
+            "font_family",
+            "font_size",
+            "position_y_percent",
+            "base_color",
+            "highlight_color",
+            "outline_color",
+            "outline_width",
+            "background_color",
+            "background_opacity",
+            "word_spacing"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "caption_mode",
+        "caption_group_size",
+        "caption_preset_id",
+        "caption_style"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "duration_seconds",
+    "start_seconds",
+    "options"
+  ],
+  "additionalProperties": false
+}
+```
+
+Inspect `GET /tools/ai_captions/catalog` for supported choices. Runtime checks also validate cross-field rules, source ownership and tool-specific URL restrictions. Quote the exact request before submission.
+
+Uploads: up to 4294967296 bytes before deployment-specific caps; MIME types: video/mp4, video/quicktime, video/webm.
+
+Results are returned through `GET /jobs/{id}`; output assets can be passed to the next tool. [Job lifecycle](/concepts/jobs).

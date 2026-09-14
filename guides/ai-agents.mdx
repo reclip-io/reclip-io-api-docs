@@ -1,0 +1,12 @@
+---
+title: "AI assistants and Reclip Skill"
+description: "Use the same API from an LLM skill."
+---
+
+The repository includes skills/reclip/SKILL.md and a Python standard-library client. Install the skill folder into your assistant's supported skill directory, then provide RECLIP_API_KEY and optionally RECLIP_API_BASE_URL through its environment.
+
+The skill discovers tool schemas, uploads local sources, quotes costs, submits with persistent idempotency state, polls and retrieves outputs. It never requires browser cookies.
+
+The permission to inspect an account or quote a task is not permission to spend unlimited credits. The skill preserves the user's requested operation and budget, and stops before additional unapproved work.
+
+Machine-readable entrypoints: /api/v1/openapi.json, the repository OpenAPI snapshot and llms.txt. This release does not include an MCP server.

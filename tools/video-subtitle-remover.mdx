@@ -1,0 +1,99 @@
+---
+title: "Subtitle Removal"
+description: "Remove hardcoded and burned-in subtitles from a video with AI."
+---
+
+Remove hardcoded and burned-in subtitles from a video with AI.
+
+<Info>Beta implementation. Live provider acceptance remains a release gate; this page does not claim production availability.</Info>
+
+Submit `POST /jobs` with `tool: "video_subtitle_remover"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
+
+Required plan tier: **starter**. API access additionally requires an active paid subscription.
+
+| Input field | Required | Type | Details |
+|---|---|---|---|
+| `asset_id` | Yes | string | See the full schema below. |
+| `file_name` | Yes | string | See the full schema below. |
+| `duration_seconds` | Yes | number | See the full schema below. |
+| `region` | Yes | object | See the full schema below. |
+| `catalog_tool_code` | No | string | Allowed: `caption_remover`, `video_subtitle_remover`, `watermark_remover` |
+
+## Complete input schema
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "asset_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "file_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "duration_seconds": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 90
+    },
+    "region": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "width": {
+          "type": "number",
+          "minimum": 2,
+          "maximum": 100
+        },
+        "height": {
+          "type": "number",
+          "minimum": 2,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    },
+    "catalog_tool_code": {
+      "type": "string",
+      "enum": [
+        "caption_remover",
+        "video_subtitle_remover",
+        "watermark_remover"
+      ]
+    }
+  },
+  "required": [
+    "asset_id",
+    "file_name",
+    "duration_seconds",
+    "region"
+  ],
+  "additionalProperties": false
+}
+```
+
+Inspect `GET /tools/video_subtitle_remover/catalog` for supported choices. Runtime checks also validate cross-field rules, source ownership and tool-specific URL restrictions. Quote the exact request before submission.
+
+Uploads: up to 524288000 bytes before deployment-specific caps; MIME types: video/mp4, video/quicktime, video/webm, video/x-msvideo, video/x-matroska, video/x-ms-wmv.
+
+Results are returned through `GET /jobs/{id}`; output assets can be passed to the next tool. [Job lifecycle](/concepts/jobs).

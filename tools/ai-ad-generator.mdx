@@ -1,0 +1,143 @@
+---
+title: "AI Ad Generator"
+description: "Create a product video ad from an image and prompt."
+---
+
+Create a product video ad from an image and prompt.
+
+<Info>Beta implementation. Live provider acceptance remains a release gate; this page does not claim production availability.</Info>
+
+Submit `POST /jobs` with `tool: "ai_ad_generator"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
+
+Required plan tier: **starter**. API access additionally requires an active paid subscription.
+
+| Input field | Required | Type | Details |
+|---|---|---|---|
+| `prompt` | Yes | string | See the full schema below. |
+| `model` | Yes | string | Allowed: `veo3_fast`, `grok_imagine`, `google_omni`, `kling`, `seedance2`, `seedance2_fast`, `seedance2_mini` |
+| `format` | Yes | string | Allowed: `9:16`, `16:9` |
+| `duration_seconds` | Yes | integer | See the full schema below. |
+| `variants` | Yes | number | See the full schema below. |
+| `grok_mode` | Yes | string | Allowed: `normal`, `fun`, `spicy` |
+| `grok_resolution` | Yes | string | Allowed: `480p`, `720p` |
+| `seedance_resolution` | Yes | string | Allowed: `480p`, `720p`, `1080p` |
+| `omni_resolution` | Yes | string | Allowed: `720p`, `1080p`, `4K` |
+| `audio_enabled` | Yes | boolean | See the full schema below. |
+| `product_asset_id` | Yes | string | See the full schema below. |
+| `avatar_asset_id` | Yes | union | See the full schema below. |
+
+## Complete input schema
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "prompt": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "model": {
+      "type": "string",
+      "enum": [
+        "veo3_fast",
+        "grok_imagine",
+        "google_omni",
+        "kling",
+        "seedance2",
+        "seedance2_fast",
+        "seedance2_mini"
+      ]
+    },
+    "format": {
+      "type": "string",
+      "enum": [
+        "9:16",
+        "16:9"
+      ]
+    },
+    "duration_seconds": {
+      "type": "integer",
+      "minimum": 4,
+      "maximum": 15
+    },
+    "variants": {
+      "type": "number",
+      "const": 1
+    },
+    "grok_mode": {
+      "type": "string",
+      "enum": [
+        "normal",
+        "fun",
+        "spicy"
+      ]
+    },
+    "grok_resolution": {
+      "type": "string",
+      "enum": [
+        "480p",
+        "720p"
+      ]
+    },
+    "seedance_resolution": {
+      "type": "string",
+      "enum": [
+        "480p",
+        "720p",
+        "1080p"
+      ]
+    },
+    "omni_resolution": {
+      "type": "string",
+      "enum": [
+        "720p",
+        "1080p",
+        "4K"
+      ]
+    },
+    "audio_enabled": {
+      "type": "boolean"
+    },
+    "product_asset_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "avatar_asset_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "prompt",
+    "model",
+    "format",
+    "duration_seconds",
+    "variants",
+    "grok_mode",
+    "grok_resolution",
+    "seedance_resolution",
+    "omni_resolution",
+    "audio_enabled",
+    "product_asset_id",
+    "avatar_asset_id"
+  ],
+  "additionalProperties": false
+}
+```
+
+Inspect `GET /tools/ai_ad_generator/catalog` for supported choices. Runtime checks also validate cross-field rules, source ownership and tool-specific URL restrictions. Quote the exact request before submission.
+
+Uploads: up to 10485760 bytes before deployment-specific caps; MIME types: image/jpeg, image/png, image/webp.
+
+Results are returned through `GET /jobs/{id}`; output assets can be passed to the next tool. [Job lifecycle](/concepts/jobs).

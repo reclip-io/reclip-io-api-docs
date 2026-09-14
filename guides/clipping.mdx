@@ -1,0 +1,14 @@
+---
+title: "Create AI clips"
+description: "Turn a source video into short clips."
+---
+
+Upload a source for ai_clipper, then quote and submit:
+
+```json
+{"tool":"ai_clipper","input":{"asset_id":"YOUR_ASSET_UUID"},"options":{"analysis_start_seconds":0,"analysis_end_seconds":60,"captions_enabled":true,"language":"en"},"maximum_outputs":2,"maximum_credits":100}
+```
+
+This operation requires an explicit analysis range in the public service. Source links must satisfy the clipper's supported URL rules.
+
+After success, GET /jobs/\{id\}/clips lists clip IDs. Use GET /clips/\{id\} to read editable captions and the editor revision. Download output assets through the signed download endpoint.

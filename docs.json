@@ -1,0 +1,162 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "Reclip API",
+  "theme": "almond",
+  "colors": {
+    "primary": "#2563EB",
+    "light": "#60A5FA",
+    "dark": "#1D4ED8"
+  },
+  "logo": {
+    "light": "/logo/reclip.svg",
+    "dark": "/logo/reclip.svg",
+    "href": "https://www.reclip.io"
+  },
+  "favicon": "/logo/icon.svg",
+  "fonts": {
+    "family": "Inter"
+  },
+  "api": {
+    "openapi": "openapi/reclip-v1.json",
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": [
+        "curl",
+        "python",
+        "javascript"
+      ],
+      "defaults": "required",
+      "prefill": true,
+      "autogenerate": true
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "authentication"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/tools",
+              "concepts/assets",
+              "concepts/jobs",
+              "concepts/projects",
+              "concepts/billing",
+              "concepts/rate-limits",
+              "concepts/errors"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/clipping",
+              "guides/captions-and-exports",
+              "guides/chaining-tools",
+              "guides/ai-agents",
+              "guides/retries"
+            ]
+          },
+          {
+            "group": "Release",
+            "pages": [
+              "changelog"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "icon": "code",
+        "groups": [
+          {
+            "group": "Resources",
+            "pages": [
+              "api-reference/create-roblox-composition",
+              "api-reference/get-roblox-composition",
+              "api-reference/get-api-identity",
+              "api-reference/list-tools",
+              "api-reference/get-tool-schema",
+              "api-reference/get-tool-catalog",
+              "api-reference/create-upload",
+              "api-reference/confirm-upload",
+              "api-reference/get-asset",
+              "api-reference/get-download-url",
+              "api-reference/quote-job",
+              "api-reference/create-job",
+              "api-reference/list-jobs",
+              "api-reference/get-job",
+              "api-reference/cancel-job",
+              "api-reference/list-job-clips",
+              "api-reference/get-clip",
+              "api-reference/save-clip-captions",
+              "api-reference/export-clip-revision",
+              "api-reference/create-project",
+              "api-reference/list-projects",
+              "api-reference/get-project",
+              "api-reference/get-usage-and-limits"
+            ]
+          },
+          {
+            "group": "Tools",
+            "pages": [
+              "tools/ai-clone",
+              "tools/ai-video-generator",
+              "tools/ai-ad-generator",
+              "tools/ai-image-generator",
+              "tools/image-background-remover",
+              "tools/ai-clipper",
+              "tools/ai-captions",
+              "tools/video-to-prompt",
+              "tools/caption-remover",
+              "tools/video-subtitle-remover",
+              "tools/watermark-remover",
+              "tools/sora-watermark",
+              "tools/ai-voiceover",
+              "tools/translate-and-dub",
+              "tools/roblox-rant",
+              "tools/video-downloader",
+              "tools/youtube-transcript",
+              "tools/tiktok-transcript",
+              "tools/mp4-to-mp3",
+              "tools/video-compressor",
+              "tools/video-cropper",
+              "tools/video-trimmer",
+              "tools/video-to-gif",
+              "tools/transcription"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/ricciflow-api/reclip-io-api-docs"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get API Key",
+      "href": "https://www.reclip.io/settings/api-keys"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/ricciflow-api/reclip-io-api-docs"
+    }
+  }
+}

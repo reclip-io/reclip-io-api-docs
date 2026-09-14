@@ -1,0 +1,175 @@
+---
+title: "Video Downloader"
+description: "Download videos from supported social platforms with a paid plan."
+---
+
+Download videos from supported social platforms with a paid plan.
+
+<Info>Beta implementation. Live provider acceptance remains a release gate; this page does not claim production availability.</Info>
+
+Submit `POST /jobs` with `tool: "video_downloader"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
+
+Required plan tier: **starter**. API access additionally requires an active paid subscription.
+
+| Input field | Required | Type | Details |
+|---|---|---|---|
+| `source_url` | Yes | string | See the full schema below. |
+| `platform` | Yes | string | Allowed: `youtube`, `tiktok`, `instagram` |
+| `file_name` | Yes | string | See the full schema below. |
+| `format_id` | Yes | union | See the full schema below. |
+| `format_height` | No | union | See the full schema below. |
+| `format_size_bytes` | No | union | See the full schema below. |
+| `maximum_download_bytes` | Yes | integer | See the full schema below. |
+| `has_audio` | Yes | union | See the full schema below. |
+| `source_title` | Yes | union | See the full schema below. |
+| `source_creator` | Yes | union | See the full schema below. |
+| `source_thumbnail_url` | Yes | union | See the full schema below. |
+| `source_duration_seconds` | Yes | union | See the full schema below. |
+
+## Complete input schema
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "source_url": {
+      "type": "string",
+      "maxLength": 2048,
+      "format": "uri"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "youtube",
+        "tiktok",
+        "instagram"
+      ]
+    },
+    "file_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "format_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[A-Za-z0-9._-]+$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "format_height": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 144,
+          "maximum": 4320
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "format_size_bytes": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "maximum_download_bytes": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 2000000000
+    },
+    "has_audio": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source_title": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source_creator": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source_thumbnail_url": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 2048,
+          "format": "uri"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source_duration_seconds": {
+      "anyOf": [
+        {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 86400
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "source_url",
+    "platform",
+    "file_name",
+    "format_id",
+    "maximum_download_bytes",
+    "has_audio",
+    "source_title",
+    "source_creator",
+    "source_thumbnail_url",
+    "source_duration_seconds"
+  ],
+  "additionalProperties": false
+}
+```
+
+Inspect `GET /tools/video_downloader/catalog` for supported choices. Runtime checks also validate cross-field rules, source ownership and tool-specific URL restrictions. Quote the exact request before submission.
+
+This operation does not advertise an upload policy.
+
+Results are returned through `GET /jobs/{id}`; output assets can be passed to the next tool. [Job lifecycle](/concepts/jobs).

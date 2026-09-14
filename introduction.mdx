@@ -1,0 +1,14 @@
+---
+title: "Reclip Public API"
+description: "Run media tools from code and AI assistants."
+---
+
+Reclip exposes server-side video, image and audio operations through a workspace-scoped API. Upload a source, quote a tool operation, submit a durable job and retrieve the output assets.
+
+<Warning>This is a beta implementation reference. Production enablement and real provider processing acceptance have not been certified by this documentation release. An unavailable deployment returns `api_not_enabled`.</Warning>
+
+Base URL: `https://www.reclip.io/api/v1`. Authentication: Bearer API key. All timestamps are UTC ISO timestamps; durations are seconds, sizes are bytes, and prices are Reclip credits.
+
+<CardGroup cols={2}><Card title="Quickstart" icon="bolt" href="/quickstart">Upload, submit, poll and download.</Card><Card title="AI assistants" icon="robot" href="/guides/ai-agents">Use the bundled Reclip skill.</Card></CardGroup>
+
+The 24 server tool contracts are included. The two Gemini watermark tools execute in the browser and are not API operations. Webhooks, arbitrary natural-language runs, MCP and GraphQL are outside v1.

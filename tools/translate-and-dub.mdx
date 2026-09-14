@@ -1,0 +1,251 @@
+---
+title: "AI Video Translator"
+description: "Translate speech into a new AI voice and replace burned-in subtitles, headlines, offers, and calls to action."
+---
+
+Translate speech into a new AI voice and replace burned-in subtitles, headlines, offers, and calls to action.
+
+<Info>Beta implementation. Live provider acceptance remains a release gate; this page does not claim production availability.</Info>
+
+Submit `POST /jobs` with `tool: "translate_and_dub"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
+
+Required plan tier: **free**. API access additionally requires an active paid subscription.
+
+| Input field | Required | Type | Details |
+|---|---|---|---|
+| `asset_id` | Yes | string | See the full schema below. |
+| `file_name` | Yes | string | See the full schema below. |
+| `duration_seconds` | Yes | number | See the full schema below. |
+| `source_language_code` | Yes | union | See the full schema below. |
+| `target_language_code` | Yes | string | See the full schema below. |
+| `voice_id` | Yes | string | See the full schema below. |
+| `model_id` | Yes | string | See the full schema below. |
+| `public_owner_id` | Yes | union | See the full schema below. |
+| `voice_source` | Yes | string | Allowed: `library`, `custom` |
+| `stability` | Yes | number | See the full schema below. |
+| `similarity` | Yes | number | See the full schema below. |
+| `speed` | Yes | number | See the full schema below. |
+| `use_speaker_boost` | Yes | boolean | See the full schema below. |
+| `caption_content_mode` | Yes | string | Allowed: `auto`, `speech_subtitles`, `independent_text` |
+| `caption_region_override` | No | union | See the full schema below. |
+| `caption_group_size` | Yes | integer | See the full schema below. |
+| `caption_style` | Yes | object | See the full schema below. |
+
+## Complete input schema
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "asset_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "file_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "duration_seconds": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 90
+    },
+    "source_language_code": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "target_language_code": {
+      "type": "string"
+    },
+    "voice_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "model_id": {
+      "type": "string"
+    },
+    "public_owner_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "voice_source": {
+      "type": "string",
+      "enum": [
+        "library",
+        "custom"
+      ]
+    },
+    "stability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "similarity": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "speed": {
+      "type": "number",
+      "minimum": 0.7,
+      "maximum": 1.2
+    },
+    "use_speaker_boost": {
+      "type": "boolean"
+    },
+    "caption_content_mode": {
+      "default": "auto",
+      "type": "string",
+      "enum": [
+        "auto",
+        "speech_subtitles",
+        "independent_text"
+      ]
+    },
+    "caption_region_override": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "x": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "y": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "width": {
+              "type": "number",
+              "minimum": 2,
+              "maximum": 100
+            },
+            "height": {
+              "type": "number",
+              "minimum": 2,
+              "maximum": 100
+            }
+          },
+          "required": [
+            "x",
+            "y",
+            "width",
+            "height"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "caption_group_size": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 8
+    },
+    "caption_style": {
+      "type": "object",
+      "properties": {
+        "font_family": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "font_size": {
+          "type": "integer",
+          "minimum": 32,
+          "maximum": 112
+        },
+        "base_color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "highlight_color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "outline_color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "outline_width": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20
+        },
+        "background_color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "background_opacity": {
+          "type": "number",
+          "const": 100
+        },
+        "word_spacing": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 30
+        }
+      },
+      "required": [
+        "font_family",
+        "font_size",
+        "base_color",
+        "highlight_color",
+        "outline_color",
+        "outline_width",
+        "background_color",
+        "background_opacity",
+        "word_spacing"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "asset_id",
+    "file_name",
+    "duration_seconds",
+    "source_language_code",
+    "target_language_code",
+    "voice_id",
+    "model_id",
+    "public_owner_id",
+    "voice_source",
+    "stability",
+    "similarity",
+    "speed",
+    "use_speaker_boost",
+    "caption_content_mode",
+    "caption_group_size",
+    "caption_style"
+  ],
+  "additionalProperties": false
+}
+```
+
+Inspect `GET /tools/translate_and_dub/catalog` for supported choices. Runtime checks also validate cross-field rules, source ownership and tool-specific URL restrictions. Quote the exact request before submission.
+
+Uploads: up to 524288000 bytes before deployment-specific caps; MIME types: video/mp4, video/quicktime, video/webm.
+
+Results are returned through `GET /jobs/{id}`; output assets can be passed to the next tool. [Job lifecycle](/concepts/jobs).

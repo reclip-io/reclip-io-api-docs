@@ -1,0 +1,28 @@
+---
+title: "Authentication"
+description: "Workspace-scoped API keys and permissions."
+---
+
+Send every authenticated request with:
+
+```http
+Authorization: Bearer reclip_live_<lookup-prefix>_<secret>
+```
+
+Keys belong to exactly one workspace. A request cannot override workspace identity. The workspace owner manages keys with a logged-in browser session. A task API key cannot create other keys.
+
+Keys have a name, a permission set and optional expiry. Secrets are only returned on creation or rotation; storage contains a SHA-256 digest of a cryptographically random 256-bit secret. Revocation prevents subsequent authentication. Requests already admitted can complete. Removing the creator's workspace membership also invalidates access.
+
+| Scope | Access |
+|---|---|
+| assets:read | Read/download assets, use them as task inputs |
+| assets:write | Upload/confirm assets and edit clip captions |
+| jobs:read | List and inspect jobs |
+| jobs:write | Quote, submit, cancel and export |
+| projects:read | List and inspect projects |
+| projects:write | Create projects and attach new jobs |
+| usage:read | Read shared credits and key job counts |
+
+Input assets additionally require assets:read. Quoting an explicit project requires projects:read; submitting into one requires projects:write.
+
+**Rotation immediately revokes the old key.** For an uninterrupted migration, create another key, update your clients, and then revoke the old key.

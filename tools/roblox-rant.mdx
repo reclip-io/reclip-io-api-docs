@@ -1,0 +1,311 @@
+---
+title: "Roblox Rant"
+description: "Create a narrated short over Roblox gameplay."
+---
+
+Create a narrated short over Roblox gameplay.
+
+<Info>Beta implementation. Live provider acceptance remains a release gate; this page does not claim production availability.</Info>
+
+Submit `POST /jobs` with `tool: "roblox_rant"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
+
+Required plan tier: **starter**. API access additionally requires an active paid subscription.
+
+| Input field | Required | Type | Details |
+|---|---|---|---|
+| `operation` | Yes | string | Allowed: `import_background`, `generate_narration`, `prepare_narration`, `render` |
+| `input_asset_ids` | Yes | array | See the full schema below. |
+| `project_id` | Yes | string | See the full schema below. |
+| `background_key` | Yes | union | See the full schema below. |
+| `script` | Yes | string | See the full schema below. |
+| `file_name` | Yes | string | See the full schema below. |
+| `voice_id` | Yes | union | See the full schema below. |
+| `model_id` | Yes | union | See the full schema below. |
+| `public_owner_id` | Yes | null | See the full schema below. |
+| `voice_source` | Yes | string | Allowed: `library`, `custom` |
+| `stability` | Yes | number | See the full schema below. |
+| `similarity` | Yes | number | See the full schema below. |
+| `speed` | Yes | number | See the full schema below. |
+| `use_speaker_boost` | Yes | boolean | See the full schema below. |
+| `duration_seconds` | Yes | number | See the full schema below. |
+| `video_layout` | Yes | string | See the full schema below. |
+| `caption_style` | Yes | string | Allowed: `single_word`, `three_word_highlight` |
+| `caption_group_size` | Yes | integer | See the full schema below. |
+| `captions_enabled` | Yes | boolean | See the full schema below. |
+| `caption_words` | Yes | array | See the full schema below. |
+| `caption_editor_style` | Yes | union | See the full schema below. |
+
+## Complete input schema
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": [
+        "import_background",
+        "generate_narration",
+        "prepare_narration",
+        "render"
+      ]
+    },
+    "input_asset_ids": {
+      "maxItems": 2,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      }
+    },
+    "project_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "background_key": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "script": {
+      "type": "string",
+      "maxLength": 10000
+    },
+    "file_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "voice_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "model_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "public_owner_id": {
+      "type": "null"
+    },
+    "voice_source": {
+      "type": "string",
+      "enum": [
+        "library",
+        "custom"
+      ]
+    },
+    "stability": {
+      "type": "number",
+      "const": 0.5
+    },
+    "similarity": {
+      "type": "number",
+      "const": 0.75
+    },
+    "speed": {
+      "type": "number",
+      "const": 1
+    },
+    "use_speaker_boost": {
+      "type": "boolean",
+      "const": true
+    },
+    "duration_seconds": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 3600
+    },
+    "video_layout": {
+      "type": "string",
+      "const": "blur"
+    },
+    "caption_style": {
+      "type": "string",
+      "enum": [
+        "single_word",
+        "three_word_highlight"
+      ]
+    },
+    "caption_group_size": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 8
+    },
+    "captions_enabled": {
+      "type": "boolean",
+      "const": true
+    },
+    "caption_words": {
+      "maxItems": 20000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "start_seconds": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 3600
+          },
+          "end_seconds": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 3600
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "color": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}$"
+          }
+        },
+        "required": [
+          "id",
+          "start_seconds",
+          "end_seconds",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "caption_editor_style": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "font_family": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "font_size": {
+              "type": "integer",
+              "minimum": 12,
+              "maximum": 240
+            },
+            "base_color": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "highlight_color": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "outline_color": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "outline_width": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20
+            },
+            "background_color": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$"
+            },
+            "background_opacity": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "position_y_percent": {
+              "type": "number",
+              "minimum": 5,
+              "maximum": 95
+            },
+            "layout_version": {
+              "type": "number",
+              "const": 2
+            },
+            "word_spacing": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 30
+            }
+          },
+          "required": [
+            "font_family",
+            "font_size",
+            "base_color",
+            "highlight_color",
+            "outline_color",
+            "outline_width",
+            "background_color",
+            "background_opacity",
+            "position_y_percent",
+            "word_spacing"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "operation",
+    "input_asset_ids",
+    "project_id",
+    "background_key",
+    "script",
+    "file_name",
+    "voice_id",
+    "model_id",
+    "public_owner_id",
+    "voice_source",
+    "stability",
+    "similarity",
+    "speed",
+    "use_speaker_boost",
+    "duration_seconds",
+    "video_layout",
+    "caption_style",
+    "caption_group_size",
+    "captions_enabled",
+    "caption_words",
+    "caption_editor_style"
+  ],
+  "additionalProperties": false
+}
+```
+
+Inspect `GET /tools/roblox_rant/catalog` for supported choices. Runtime checks also validate cross-field rules, source ownership and tool-specific URL restrictions. Quote the exact request before submission.
+
+Uploads: up to 524288000 bytes before deployment-specific caps; MIME types: video/mp4, video/quicktime, video/webm, audio/mpeg, audio/mp4, audio/wav, audio/x-wav.
+
+Results are returned through `GET /jobs/{id}`; output assets can be passed to the next tool. [Job lifecycle](/concepts/jobs).

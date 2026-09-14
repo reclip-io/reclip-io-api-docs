@@ -1,0 +1,63 @@
+---
+title: "Video to Prompt Generator"
+description: "Reconstruct an editable AI video prompt from any supported video."
+---
+
+Reconstruct an editable AI video prompt from any supported video.
+
+<Info>Beta implementation. Live provider acceptance remains a release gate; this page does not claim production availability.</Info>
+
+Submit `POST /jobs` with `tool: "video_to_prompt"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
+
+Required plan tier: **starter**. API access additionally requires an active paid subscription.
+
+| Input field | Required | Type | Details |
+|---|---|---|---|
+| `asset_id` | Yes | string | See the full schema below. |
+| `file_name` | Yes | string | See the full schema below. |
+| `analysis_start_seconds` | Yes | number | See the full schema below. |
+| `analysis_end_seconds` | Yes | number | See the full schema below. |
+
+## Complete input schema
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "asset_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "file_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "analysis_start_seconds": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 86400
+    },
+    "analysis_end_seconds": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 86400
+    }
+  },
+  "required": [
+    "asset_id",
+    "file_name",
+    "analysis_start_seconds",
+    "analysis_end_seconds"
+  ],
+  "additionalProperties": false
+}
+```
+
+Inspect `GET /tools/video_to_prompt/catalog` for supported choices. Runtime checks also validate cross-field rules, source ownership and tool-specific URL restrictions. Quote the exact request before submission.
+
+Uploads: up to 524288000 bytes before deployment-specific caps; MIME types: video/mp4, video/quicktime, video/webm.
+
+Results are returned through `GET /jobs/{id}`; output assets can be passed to the next tool. [Job lifecycle](/concepts/jobs).

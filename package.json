@@ -1,0 +1,17 @@
+{
+  "name": "reclip-io-api-docs",
+  "version": "1.0.0-beta.1",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "validate": "python3 scripts/check_docs.py && node scripts/validate-docs.mjs && python3 scripts/test_client.py",
+    "preview": "npx mint dev"
+  },
+  "devDependencies": {
+    "@apidevtools/swagger-parser": "12.0.0",
+    "@mdx-js/mdx": "3.1.1"
+  }
+}

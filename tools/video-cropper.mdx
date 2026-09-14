@@ -1,0 +1,144 @@
+---
+title: "Video Cropper"
+description: "Crop a video to a custom frame or common aspect ratio."
+---
+
+Crop a video to a custom frame or common aspect ratio.
+
+<Info>Beta implementation. Live provider acceptance remains a release gate; this page does not claim production availability.</Info>
+
+Submit `POST /jobs` with `tool: "video_cropper"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
+
+Required plan tier: **free**. API access additionally requires an active paid subscription.
+
+| Input field | Required | Type | Details |
+|---|---|---|---|
+| `asset_id` | Yes | string | See the full schema below. |
+| `file_name` | Yes | string | See the full schema below. |
+| `mode` | Yes | string | Allowed: `rect`, `ratio` |
+| `crop_x` | Yes | union | See the full schema below. |
+| `crop_y` | Yes | union | See the full schema below. |
+| `crop_width` | Yes | union | See the full schema below. |
+| `crop_height` | Yes | union | See the full schema below. |
+| `aspect_ratio` | Yes | union | See the full schema below. |
+| `anchor` | Yes | string | Allowed: `center`, `top`, `bottom`, `left`, `right`, `top-left`, `top-right`, `bottom-left`, `bottom-right` |
+
+## Complete input schema
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "asset_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "file_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "rect",
+        "ratio"
+      ]
+    },
+    "crop_x": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "crop_y": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "crop_width": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "crop_height": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "aspect_ratio": {
+      "anyOf": [
+        {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 20
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "anchor": {
+      "type": "string",
+      "enum": [
+        "center",
+        "top",
+        "bottom",
+        "left",
+        "right",
+        "top-left",
+        "top-right",
+        "bottom-left",
+        "bottom-right"
+      ]
+    }
+  },
+  "required": [
+    "asset_id",
+    "file_name",
+    "mode",
+    "crop_x",
+    "crop_y",
+    "crop_width",
+    "crop_height",
+    "aspect_ratio",
+    "anchor"
+  ],
+  "additionalProperties": false
+}
+```
+
+Inspect `GET /tools/video_cropper/catalog` for supported choices. Runtime checks also validate cross-field rules, source ownership and tool-specific URL restrictions. Quote the exact request before submission.
+
+Uploads: up to 262144000 bytes before deployment-specific caps; MIME types: video/mp4, video/quicktime, video/webm, video/x-msvideo, video/x-matroska, video/x-ms-wmv.
+
+Results are returned through `GET /jobs/{id}`; output assets can be passed to the next tool. [Job lifecycle](/concepts/jobs).

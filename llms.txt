@@ -1,0 +1,22 @@
+# Reclip Public API
+
+Beta implementation reference; verify deployment availability. Base: https://www.reclip.io/api/v1
+
+- [Reclip Public API](introduction.mdx): Run media tools from code and AI assistants.
+- [Quickstart](quickstart.mdx): Create an API key and download your first result.
+- [Authentication](authentication.mdx): Workspace-scoped API keys and permissions.
+- [Tools](concepts/tools.mdx): Discover supported operations and input schemas.
+- [Assets and uploads](concepts/assets.mdx): Upload source files and retrieve retained outputs.
+- [Job lifecycle](concepts/jobs.mdx): Asynchronous jobs, progress and outputs.
+- [Projects](concepts/projects.mdx): Group jobs and outputs in a workspace.
+- [Credits and API eligibility](concepts/billing.mdx): Reuse workspace credits with explicit budgets.
+- [Rate limits](concepts/rate-limits.mdx): Bound request volume and workspace processing.
+- [Errors](concepts/errors.mdx): Stable error codes and request IDs.
+- [Create AI clips](guides/clipping.mdx): Turn a source video into short clips.
+- [Edit captions and export](guides/captions-and-exports.mdx): Save clip edits and render a specific revision.
+- [Chain tools](guides/chaining-tools.mdx): Pass output assets between operations.
+- [AI assistants and Reclip Skill](guides/ai-agents.mdx): Use the same API from an LLM skill.
+- [Retries and idempotency](guides/retries.mdx): Recover uncertain submissions without duplicate jobs.
+- [Changelog](changelog.mdx): Changes to the public API contract.
+- [OpenAPI](openapi/reclip-v1.json)
+- [Skill](skills/reclip/SKILL.md)

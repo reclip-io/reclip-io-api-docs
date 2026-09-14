@@ -1,0 +1,71 @@
+---
+title: "AI Video Clone"
+description: "Create an animated clone from a motion video and character image."
+---
+
+Create an animated clone from a motion video and character image.
+
+<Info>Beta implementation. Live provider acceptance remains a release gate; this page does not claim production availability.</Info>
+
+Submit `POST /jobs` with `tool: "ai_clone"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
+
+Required plan tier: **starter**. API access additionally requires an active paid subscription.
+
+| Input field | Required | Type | Details |
+|---|---|---|---|
+| `motion_asset_id` | Yes | string | See the full schema below. |
+| `character_asset_id` | Yes | string | See the full schema below. |
+| `prompt` | Yes | string | See the full schema below. |
+| `mode` | Yes | string | Allowed: `720p`, `1080p` |
+| `motion_duration_seconds` | Yes | number | See the full schema below. |
+
+## Complete input schema
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "motion_asset_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "character_asset_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "prompt": {
+      "type": "string",
+      "maxLength": 2500
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "720p",
+        "1080p"
+      ]
+    },
+    "motion_duration_seconds": {
+      "type": "number",
+      "minimum": 3,
+      "maximum": 30
+    }
+  },
+  "required": [
+    "motion_asset_id",
+    "character_asset_id",
+    "prompt",
+    "mode",
+    "motion_duration_seconds"
+  ],
+  "additionalProperties": false
+}
+```
+
+Inspect `GET /tools/ai_clone/catalog` for supported choices. Runtime checks also validate cross-field rules, source ownership and tool-specific URL restrictions. Quote the exact request before submission.
+
+Uploads: up to 104857600 bytes before deployment-specific caps; MIME types: video/mp4, video/quicktime, image/jpeg, image/png.
+
+Results are returned through `GET /jobs/{id}`; output assets can be passed to the next tool. [Job lifecycle](/concepts/jobs).

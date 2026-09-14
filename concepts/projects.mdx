@@ -1,0 +1,10 @@
+---
+title: "Projects"
+description: "Group jobs and outputs in a workspace."
+---
+
+Create a project with `POST /projects` and a title, then pass its ID as project_id when creating a job. Without project_id, normal tool submission creates a project automatically.
+
+Projects use the same workspace permissions as the web application. Archived, deleted or inaccessible projects cannot accept new jobs. A project is an organizational container; it is not itself a media-processing task.
+
+Roblox Rant also uses a tool-specific composition project in its input. Create that resource with `POST /tools/roblox_rant/projects` and a title; it is distinct from the optional outer project_id.

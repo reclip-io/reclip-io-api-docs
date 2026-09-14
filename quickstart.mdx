@@ -1,0 +1,33 @@
+---
+title: "Quickstart"
+description: "Create an API key and download your first result."
+---
+
+<Steps>
+<Step title="Create a key">
+
+Open **Settings → API Keys** in Reclip as the workspace owner. An active paid subscription and an enabled API deployment are required. Create a key with assets:read, assets:write, jobs:read and jobs:write. Copy it once and store it in your environment.
+
+</Step>
+
+<Step title="Configure the client">
+
+
+```bash
+export RECLIP_API_KEY='your-key'
+export RECLIP_API_BASE_URL='https://www.reclip.io/api/v1'
+python3 examples/quickstart.py source.mp4 --state ./reclip-run.json --maximum-credits 100
+```
+The included example uploads the video, confirms it, quotes MP4-to-MP3 extraction, submits with a persisted idempotency key, polls, and downloads the first output. The state file lets the same command resume an interrupted run. Use a new state file for a new intentional job.
+
+</Step>
+
+<Step title="Read the result">
+
+The example prints the job ID, state and destination file. Media jobs complete asynchronously. A timeout preserves the state file; rerun to resume. Failed and canceled jobs are terminal and are not automatically resubmitted.
+
+</Step>
+
+</Steps>
+
+For AI clipping, use [the clipping guide](/guides/clipping). API keys must stay in trusted server or local environments, never in public browser JavaScript.

@@ -1,0 +1,105 @@
+---
+title: "Video Compressor"
+description: "Reduce video file size with practical quality presets."
+---
+
+Reduce video file size with practical quality presets.
+
+<Info>Beta implementation. Live provider acceptance remains a release gate; this page does not claim production availability.</Info>
+
+Submit `POST /jobs` with `tool: "video_compressor"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
+
+Required plan tier: **free**. API access additionally requires an active paid subscription.
+
+| Input field | Required | Type | Details |
+|---|---|---|---|
+| `asset_id` | Yes | string | See the full schema below. |
+| `file_name` | Yes | string | See the full schema below. |
+| `crf` | Yes | integer | See the full schema below. |
+| `preset` | Yes | string | Allowed: `ultrafast`, `superfast`, `veryfast`, `faster`, `fast`, `medium`, `slow` |
+| `max_width` | Yes | union | See the full schema below. |
+| `max_fps` | Yes | union | See the full schema below. |
+| `audio_bitrate_kbps` | Yes | integer | See the full schema below. |
+
+## Complete input schema
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "asset_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "file_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "crf": {
+      "type": "integer",
+      "minimum": 18,
+      "maximum": 40
+    },
+    "preset": {
+      "type": "string",
+      "enum": [
+        "ultrafast",
+        "superfast",
+        "veryfast",
+        "faster",
+        "fast",
+        "medium",
+        "slow"
+      ]
+    },
+    "max_width": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 160,
+          "maximum": 4096
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "max_fps": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 120
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "audio_bitrate_kbps": {
+      "type": "integer",
+      "minimum": 32,
+      "maximum": 320
+    }
+  },
+  "required": [
+    "asset_id",
+    "file_name",
+    "crf",
+    "preset",
+    "max_width",
+    "max_fps",
+    "audio_bitrate_kbps"
+  ],
+  "additionalProperties": false
+}
+```
+
+Inspect `GET /tools/video_compressor/catalog` for supported choices. Runtime checks also validate cross-field rules, source ownership and tool-specific URL restrictions. Quote the exact request before submission.
+
+Uploads: up to 262144000 bytes before deployment-specific caps; MIME types: video/mp4, video/quicktime, video/webm, video/x-msvideo, video/x-matroska, video/x-ms-wmv.
+
+Results are returned through `GET /jobs/{id}`; output assets can be passed to the next tool. [Job lifecycle](/concepts/jobs).

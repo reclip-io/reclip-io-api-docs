@@ -1,0 +1,10 @@
+---
+title: "Tools"
+description: "Discover supported operations and input schemas."
+---
+
+Read `GET /tools` for the supported server catalog and `GET /tools/{tool}` for its schema and upload policy. The schema is tool-specific, while job creation uses one endpoint.
+
+Model IDs, voice IDs, presets and source restrictions are validated by the server. `GET /tools/{tool}/catalog` supplies static options where available. Do not infer that every model accepts every duration, resolution or input combination.
+
+Snake_case is used in the public interface; enum values retain their exact catalog spelling. Server normalization maps public fields onto the existing domain validators. For one source asset, the public field is `asset_id`; multi-source tools use their documented roles such as `input_asset_ids`, `motion_asset_id` or `product_asset_id`.

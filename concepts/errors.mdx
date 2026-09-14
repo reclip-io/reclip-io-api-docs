@@ -1,0 +1,25 @@
+---
+title: "Errors"
+description: "Stable error codes and request IDs."
+---
+
+Error responses use this shape:
+
+```json
+{"error":{"code":"insufficient_credits","message":"Not enough available credits."},"request_id":"..."}
+```
+
+| HTTP | Code examples | Action |
+|---|---|---|
+| 401 | unauthorized | Check key, expiry and revocation |
+| 402 | insufficient_credits | Add credits or reduce work |
+| 403 | insufficient_scope, subscription_required, tool_not_allowed | Correct permissions or plan |
+| 404 | not_found | Verify resource ID and workspace |
+| 409 | idempotency_conflict, asset_unavailable, revision_conflict | Correct input or refresh resource |
+| 410 | asset_unavailable | Use an available retained source |
+| 413 | request_too_large | Reduce JSON body size |
+| 422 | invalid_request, budget_exceeded, invalid_upload | Fix documented parameters |
+| 429 | rate_limited, capacity_exceeded | Honor Retry-After |
+| 503 | api_not_enabled, service_unavailable | Check availability; safely retry uncertain submissions |
+
+X-Request-Id is returned on authenticated API responses. Preserve it when reporting an issue. Never include API secrets in support logs.

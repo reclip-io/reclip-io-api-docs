@@ -1,0 +1,12 @@
+---
+title: "Retries and idempotency"
+description: "Recover uncertain submissions without duplicate jobs."
+---
+
+POST /jobs and POST /clips/\{id\}/exports require Idempotency-Key, 8–160 ASCII letters, digits, colon, underscore or hyphen.
+
+The scope is the API key plus idempotency string. Reuse the same key and identical JSON content for transport retries. Object property order does not matter. Different content returns HTTP 409. Replay records remain durable while their associated records are retained; v1 does not automatically expire them.
+
+A successful replay returns the original job ID with replayed: true, even if capacity or credits have since changed. Switching API keys changes the idempotency scope, so resolve uncertain requests before key rotation.
+
+If creation times out, retry the same payload/key. Do not create a fresh idempotency key until you intentionally want another job. Once a job ID is known, poll instead of resubmitting. The bundled client stores state before its first submit.

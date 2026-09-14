@@ -1,0 +1,12 @@
+---
+title: "Credits and API eligibility"
+description: "Reuse workspace credits with explicit budgets."
+---
+
+API access requires an active paid subscription. Browser free trials and device-based free usage do not apply. Each tool still checks its original plan entitlement.
+
+The API and website share the existing credit balance, reservations and settlement ledger. A quote is an estimate, not a price lock or credit reservation. Use maximum_credits on submission to reject estimates above your permitted budget. Exact settlement follows the existing tool policy.
+
+Quotes for paid remote imports include the requested source-transfer cap. A downstream processing failure may still incur work already performed.
+
+`GET /usage` returns credits.balance, credits.reserved, credits.available, current-key submitted_jobs and API limits. Individual jobs expose their estimated and actual credits.

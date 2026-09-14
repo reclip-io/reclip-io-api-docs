@@ -1,0 +1,10 @@
+---
+title: "Rate limits"
+description: "Bound request volume and workspace processing."
+---
+
+The initial API admission defaults are **60 requests per minute per key** and **10 nonterminal jobs per workspace**. Additional existing plan, queue and provider limits still apply. Creating multiple keys does not increase workspace job capacity.
+
+HTTP 429 responses include Retry-After: 60. Respect this header and apply backoff. Polling counts toward the per-key request budget.
+
+JSON bodies are limited to 256 KiB. Upload video and image bytes directly to storage instead of embedding them in JSON.
