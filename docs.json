@@ -3,16 +3,16 @@
   "name": "Reclip API",
   "theme": "almond",
   "colors": {
-    "primary": "#2563EB",
-    "light": "#60A5FA",
-    "dark": "#1D4ED8"
+    "primary": "#155DFB",
+    "light": "#8EC5FF",
+    "dark": "#155DFB"
   },
   "logo": {
     "light": "/logo/reclip.svg",
-    "dark": "/logo/reclip.svg",
+    "dark": "/logo/reclip-dark.svg",
     "href": "https://www.reclip.io"
   },
-  "favicon": "/logo/icon.svg",
+  "favicon": "/logo/favicon.png",
   "fonts": {
     "family": "Inter"
   },
