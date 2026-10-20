@@ -1,0 +1,47 @@
+---
+title: "Gemini Watermark Remover"
+description: "Remove supported visible Gemini image watermarks on the server. Results identify applied, needs_review, or unsupported_watermark_style for each image."
+---
+
+Remove supported visible Gemini image watermarks on the server. Results identify applied, needs_review, or unsupported_watermark_style for each image.
+
+<Info>Public beta. Read the live tool catalog before choosing models, voices, presets, or source formats.</Info>
+
+Submit `POST /jobs` with `tool: "gemini_watermark_remover"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
+
+Required plan tier: **free**. API access additionally requires an active paid subscription.
+
+| Input field | Required | Type | Details |
+|---|---|---|---|
+| `input_asset_ids` | Yes | array | See the full schema below. |
+
+## Complete input schema
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "input_asset_ids": {
+      "minItems": 1,
+      "maxItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uuid",
+        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+      }
+    }
+  },
+  "required": [
+    "input_asset_ids"
+  ],
+  "additionalProperties": false
+}
+```
+
+Inspect `GET /tools/gemini_watermark_remover/catalog` for supported choices. Runtime checks also validate cross-field rules, source ownership and tool-specific URL restrictions. Quote the exact request before submission.
+
+Uploads: up to 10485760 bytes before deployment-specific caps; MIME types: image/jpeg, image/png, image/webp.
+
+Results are returned through `GET /jobs/{id}`; output assets can be passed to the next tool. [Job lifecycle](/concepts/jobs).

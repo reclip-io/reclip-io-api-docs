@@ -1,0 +1,100 @@
+---
+title: "AI B-Roll"
+description: "Add relevant AI images, AI video, or stock footage to your video."
+---
+
+Add relevant AI images, AI video, or stock footage to your video.
+
+<Info>Public beta. Read the live tool catalog before choosing models, voices, presets, or source formats.</Info>
+
+Submit `POST /jobs` with `tool: "ai_broll"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
+
+Required plan tier: **starter**. API access additionally requires an active paid subscription.
+
+| Input field | Required | Type | Details |
+|---|---|---|---|
+| `asset_id` | No | string | See the full schema below. |
+| `source_url` | No | string | See the full schema below. |
+| `options` | Yes | object | See the full schema below. |
+
+## Complete input schema
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "asset_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "source_url": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "options": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "default": "image",
+          "type": "string",
+          "enum": [
+            "image",
+            "video",
+            "stock"
+          ]
+        },
+        "captions_enabled": {
+          "default": false,
+          "type": "boolean"
+        },
+        "start_seconds": {
+          "default": 0,
+          "type": "number",
+          "minimum": 0
+        },
+        "end_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 43200
+        },
+        "max_shots": {
+          "default": 12,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 120
+        },
+        "style": {
+          "default": "natural",
+          "type": "string",
+          "enum": [
+            "natural",
+            "cinematic",
+            "illustration"
+          ]
+        }
+      },
+      "required": [
+        "mode",
+        "captions_enabled",
+        "start_seconds",
+        "end_seconds",
+        "max_shots",
+        "style"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "options"
+  ],
+  "additionalProperties": false
+}
+```
+
+Inspect `GET /tools/ai_broll/catalog` for supported choices. Runtime checks also validate cross-field rules, source ownership and tool-specific URL restrictions. Quote the exact request before submission.
+
+Uploads: up to 2147483648 bytes before deployment-specific caps; MIME types: video/mp4, video/quicktime, video/webm.
+
+Results are returned through `GET /jobs/{id}`; output assets can be passed to the next tool. [Job lifecycle](/concepts/jobs).

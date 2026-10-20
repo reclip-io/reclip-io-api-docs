@@ -1,6 +1,6 @@
 # Reclip Public API
 
-Beta implementation reference; verify deployment availability. Base: https://www.reclip.io/api/v1
+Public beta. API access requires an active paid workspace. Base: https://www.reclip.io/api/v1
 
 - [Reclip Public API](introduction.mdx): Run media tools from code and AI assistants.
 - [Quickstart](quickstart.mdx): Create an API key and download your first result.
@@ -15,8 +15,12 @@ Beta implementation reference; verify deployment availability. Base: https://www
 - [Create AI clips](guides/clipping.mdx): Turn a source video into short clips.
 - [Edit captions and export](guides/captions-and-exports.mdx): Save clip edits and render a specific revision.
 - [Chain tools](guides/chaining-tools.mdx): Pass output assets between operations.
+- [Reclip MCP](guides/mcp.mdx): Connect assistants to all Reclip tools and API resources.
+- [Updated tools](guides/new-tools.mdx): Transcript searches, B-Roll and Gemini image workflows.
 - [AI assistants and Reclip Skill](guides/ai-agents.mdx): Use the same API from an LLM skill.
 - [Retries and idempotency](guides/retries.mdx): Recover uncertain submissions without duplicate jobs.
 - [Changelog](changelog.mdx): Changes to the public API contract.
+- [API reference](api-reference.mdx): REST resources, media tools, and machine-readable contracts.
+- [Install the Reclip skill](guides/install-skill.mdx): Install a portable media-workflow skill with a dependency-free Python client.
 - [OpenAPI](openapi/reclip-v1.json)
 - [Skill](skills/reclip/SKILL.md)

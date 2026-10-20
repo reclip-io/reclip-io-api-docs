@@ -1,0 +1,26 @@
+---
+title: "Install the Reclip skill"
+description: "Install a portable media-workflow skill with a dependency-free Python client."
+---
+
+Download the [Reclip skill archive](https://www.reclip.io/agent-skills/reclip.zip), or clone the [skill repository](https://github.com/reclip-io/reclip-io-skills) and copy `skills/reclip` into your assistant's supported skill directory. Keep the entire folder: it contains SKILL.md, scripts, references, and agent metadata.
+
+The client requires Python 3.9 or later and uses only the standard library. Configure `RECLIP_API_KEY` in your assistant's private environment; create the key in the [API dashboard](https://www.reclip.io/dashboard/api/keys). Never commit it or paste it into a prompt. The default API base URL is `https://www.reclip.io/api/v1`.
+
+## Verify installation
+
+Run these commands from the installed skill directory:
+
+```sh
+python3 scripts/reclip_api.py --help
+python3 scripts/reclip_api.py identity
+python3 scripts/reclip_api.py tools
+```
+
+The first command works offline. Identity and tools require an active paid workspace and a valid scoped key; they do not submit jobs or spend credits.
+
+## Run a workflow
+
+Ask the assistant to inspect the exact tool schema, upload or select an owned ready asset, quote the operation, submit within your approved credit budget, and wait for outputs. Keep each upload/job state file in a private run directory and reuse it after uncertain requests. The skill supports all 30 product tools and preserves structured results for chaining.
+
+For an assistant that already supports authenticated Streamable HTTP connections, use the [MCP setup](/guides/mcp) instead. Both integrations share the same workspace keys, credits, scopes, and ownership rules.

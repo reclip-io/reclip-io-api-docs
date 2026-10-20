@@ -65,6 +65,9 @@
               "guides/captions-and-exports",
               "guides/chaining-tools",
               "guides/ai-agents",
+              "guides/install-skill",
+              "guides/mcp",
+              "guides/new-tools",
               "guides/retries"
             ]
           },
@@ -83,6 +86,12 @@
           {
             "group": "Resources",
             "pages": [
+              "api-reference",
+              "api-reference/get-b-roll-composition",
+              "api-reference/edit-b-roll-composition",
+              "api-reference/export-b-roll-composition",
+              "api-reference/quote-b-roll-shot-regeneration",
+              "api-reference/regenerate-b-roll-shot",
               "api-reference/create-roblox-composition",
               "api-reference/get-roblox-composition",
               "api-reference/get-api-identity",
@@ -111,18 +120,24 @@
           {
             "group": "Tools",
             "pages": [
+              "tools/video-upscaler",
               "tools/ai-clone",
               "tools/ai-video-generator",
+              "tools/ai-video-editor",
               "tools/ai-ad-generator",
               "tools/ai-image-generator",
               "tools/image-background-remover",
               "tools/ai-clipper",
+              "tools/clip-discovery",
+              "tools/ai-broll",
               "tools/ai-captions",
               "tools/video-to-prompt",
               "tools/caption-remover",
               "tools/video-subtitle-remover",
               "tools/watermark-remover",
               "tools/sora-watermark",
+              "tools/gemini-watermark-remover",
+              "tools/gemini-watermark-bulk-remover",
               "tools/ai-voiceover",
               "tools/translate-and-dub",
               "tools/roblox-rant",
@@ -145,18 +160,18 @@
     "links": [
       {
         "label": "GitHub",
-        "href": "https://github.com/ricciflow-api/reclip-io-api-docs"
+        "href": "https://github.com/reclip-io/reclip-io-api-docs"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Get API Key",
-      "href": "https://www.reclip.io/settings/api-keys"
+      "href": "https://www.reclip.io/dashboard/api/keys"
     }
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/ricciflow-api/reclip-io-api-docs"
+      "github": "https://github.com/reclip-io/reclip-io-api-docs"
     }
   }
 }

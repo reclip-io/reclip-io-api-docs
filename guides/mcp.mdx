@@ -1,0 +1,12 @@
+---
+title: "Reclip MCP"
+description: "Connect assistants to all Reclip tools and API resources."
+---
+
+Connect a Streamable HTTP client to https://www.reclip.io/api/mcp with the workspace API key in its private Authorization: Bearer header. The client must support API-key headers; this endpoint does not provide an OAuth sign-in flow. For assistants that require OAuth, use the [installable skill](/guides/install-skill). The endpoint supports protocol versions 2025-11-25 and 2025-06-18. POST requires Content-Type: application/json and Accept: application/json, text/event-stream. This stateless server returns JSON; GET and DELETE return 405. Browser Origin headers must match the endpoint origin.
+
+Initialize, then call tools/list. All 30 product tools are named reclip_TOOL. Each requires input, maximum_credits and idempotency_key. Resource operations use the OpenAPI operation ID prefixed with reclip_; pass JSON requests under body and path arguments separately.
+
+Quote with reclip_quote_job before submitting the selected tool. Poll reclip_get_job, then inspect result and outputs. Ownership, scopes, credits, idempotency and capacity are shared with REST. Tool failures use isError: true with structuredContent and a JSON text result.
+
+The skill includes references/mcp-tools.json with the complete MCP schemas. Protocol transport does not authorize additional paid work.

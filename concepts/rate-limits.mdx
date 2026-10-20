@@ -7,4 +7,4 @@ The initial API admission defaults are **60 requests per minute per key** and **
 
 HTTP 429 responses include Retry-After: 60. Respect this header and apply backoff. Polling counts toward the per-key request budget.
 
-JSON bodies are limited to 256 KiB. Upload video and image bytes directly to storage instead of embedding them in JSON.
+JSON bodies are limited to 1.5 MiB. Upload video and image bytes directly to storage instead of embedding them in JSON.

@@ -5,7 +5,7 @@ description: "Create a product video ad from an image and prompt."
 
 Create a product video ad from an image and prompt.
 
-<Info>Beta implementation. Live provider acceptance remains a release gate; this page does not claim production availability.</Info>
+<Info>Public beta. Read the live tool catalog before choosing models, voices, presets, or source formats.</Info>
 
 Submit `POST /jobs` with `tool: "ai_ad_generator"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
 
@@ -18,7 +18,7 @@ Required plan tier: **starter**. API access additionally requires an active paid
 | `format` | Yes | string | Allowed: `9:16`, `16:9` |
 | `duration_seconds` | Yes | integer | See the full schema below. |
 | `variants` | Yes | number | See the full schema below. |
-| `grok_mode` | Yes | string | Allowed: `normal`, `fun`, `spicy` |
+| `grok_mode` | Yes | string | Allowed: `normal`, `fun` |
 | `grok_resolution` | Yes | string | Allowed: `480p`, `720p` |
 | `seedance_resolution` | Yes | string | Allowed: `480p`, `720p`, `1080p` |
 | `omni_resolution` | Yes | string | Allowed: `720p`, `1080p`, `4K` |
@@ -70,8 +70,7 @@ Required plan tier: **starter**. API access additionally requires an active paid
       "type": "string",
       "enum": [
         "normal",
-        "fun",
-        "spicy"
+        "fun"
       ]
     },
     "grok_resolution": {

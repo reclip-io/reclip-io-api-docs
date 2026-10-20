@@ -31,5 +31,10 @@ for tab in config['navigation']['tabs']:
                 assert (root / (link.lstrip('/') + '.mdx')).exists(), link
 for path in root.rglob('*.py'):
     if 'node_modules' not in path.parts: ast.parse(path.read_text())
-assert len(list((root / 'tools').glob('*.mdx'))) == 24
+expected_tools = {
+    request['properties']['tool']['const'].replace('_', '-')
+    for request in spec['components']['schemas']['JobRequestEnvelope']['oneOf']
+}
+actual_tools = {path.stem for path in (root / 'tools').glob('*.mdx')}
+assert actual_tools == expected_tools, (actual_tools, expected_tools)
 print('OpenAPI references, navigation, tool pages and Python syntax passed.')

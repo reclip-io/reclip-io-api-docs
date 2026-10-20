@@ -1,10 +1,10 @@
 # Reclip API documentation
 
-English Mintlify documentation for Reclip Public API v1. This repository contains the OpenAPI snapshot, resource references, 24 server-tool guides, runnable examples and an LLM skill.
+English Mintlify documentation for Reclip Public API v1. This repository contains the OpenAPI snapshot, resource references, 30 server-tool guides, runnable examples and an LLM skill.
 
 ## Status
 
-Beta implementation reference, not a claim that production is enabled. See changelog.mdx and the main application's release checklist before live use.
+Public beta. Published at https://reclip.io/docs. The application proxies /docs to the reclip-io Mintlify project. API and MCP access require a scoped workspace key and an active paid subscription. Provider availability is determined by live catalogs and job results.
 
 ## Preview and validation
 

@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Reclip Public API",
-    "version": "1.0.0-beta.1",
+    "version": "1.0.0-beta.2",
     "description": "Workspace-scoped media tools. Deployment and provider acceptance testing are required before production enablement."
   },
   "servers": [
@@ -16,6 +16,990 @@
     }
   ],
   "paths": {
+    "/broll/{id}": {
+      "get": {
+        "operationId": "get_b-roll_composition",
+        "summary": "Get B-Roll composition",
+        "description": "Required scopes: jobs:read. Beta API. Availability depends on deployment enablement.",
+        "tags": [
+          "broll"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "edit_b-roll_composition",
+        "summary": "Edit B-Roll composition",
+        "description": "Required scopes: assets:write. Beta API. Availability depends on deployment enablement.",
+        "tags": [
+          "broll"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "revision": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "shots": {
+                    "maxItems": 120,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "pattern": "^shot-[0-9]{1,3}$"
+                        },
+                        "start": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "end": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        "prompt": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 1200
+                        },
+                        "query": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120
+                        },
+                        "enabled": {
+                          "default": true,
+                          "type": "boolean"
+                        },
+                        "asset_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "image": {
+                          "type": "boolean"
+                        },
+                        "provenance": {
+                          "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
+                          "additionalProperties": {}
+                        },
+                        "crop_x": {
+                          "default": 0.5,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "crop_y": {
+                          "default": 0.5,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "start",
+                        "end",
+                        "prompt",
+                        "query",
+                        "enabled",
+                        "asset_id",
+                        "image",
+                        "provenance",
+                        "crop_x",
+                        "crop_y"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "revision",
+                  "shots"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/broll/{id}/exports": {
+      "post": {
+        "operationId": "export_b-roll_composition",
+        "summary": "Export B-Roll composition",
+        "description": "Required scopes: jobs:write. Beta API. Availability depends on deployment enablement.",
+        "tags": [
+          "broll"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{8,160}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "revision": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "revision"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "status_url",
+                    "replayed"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status_url": {
+                      "type": "string"
+                    },
+                    "replayed": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/broll/{id}/regenerate-quote": {
+      "post": {
+        "operationId": "quote_b-roll_shot_regeneration",
+        "summary": "Quote B-Roll shot regeneration",
+        "description": "Required scopes: jobs:write. Beta API. Availability depends on deployment enablement.",
+        "tags": [
+          "broll"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "revision": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "shot_id": {
+                    "type": "string",
+                    "pattern": "^shot-[0-9]{1,3}$"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1200
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "image",
+                      "video",
+                      "stock"
+                    ]
+                  },
+                  "maximum_credits": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "revision",
+                  "shot_id",
+                  "prompt",
+                  "mode"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/broll/{id}/regenerate": {
+      "post": {
+        "operationId": "regenerate_b-roll_shot",
+        "summary": "Regenerate B-Roll shot",
+        "description": "Required scopes: jobs:write. Beta API. Availability depends on deployment enablement.",
+        "tags": [
+          "broll"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9:_-]{8,160}$"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "revision": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "shot_id": {
+                    "type": "string",
+                    "pattern": "^shot-[0-9]{1,3}$"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1200
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "image",
+                      "video",
+                      "stock"
+                    ]
+                  },
+                  "maximum_credits": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "revision",
+                  "shot_id",
+                  "prompt",
+                  "mode",
+                  "maximum_credits"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "status_url",
+                    "replayed"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status_url": {
+                      "type": "string"
+                    },
+                    "replayed": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/tools/roblox_rant/projects": {
       "post": {
         "operationId": "create_roblox_composition",
@@ -760,18 +1744,24 @@
             "schema": {
               "type": "string",
               "enum": [
+                "video_upscaler",
                 "ai_clone",
                 "ai_video_generator",
+                "ai_video_editor",
                 "ai_ad_generator",
                 "ai_image_generator",
                 "image_background_remover",
                 "ai_clipper",
+                "clip_discovery",
+                "ai_broll",
                 "ai_captions",
                 "video_to_prompt",
                 "caption_remover",
                 "video_subtitle_remover",
                 "watermark_remover",
                 "sora_watermark",
+                "gemini_watermark_remover",
+                "gemini_watermark_bulk_remover",
                 "ai_voiceover",
                 "translate_and_dub",
                 "roblox_rant",
@@ -996,18 +1986,24 @@
             "schema": {
               "type": "string",
               "enum": [
+                "video_upscaler",
                 "ai_clone",
                 "ai_video_generator",
+                "ai_video_editor",
                 "ai_ad_generator",
                 "ai_image_generator",
                 "image_background_remover",
                 "ai_clipper",
+                "clip_discovery",
+                "ai_broll",
                 "ai_captions",
                 "video_to_prompt",
                 "caption_remover",
                 "video_subtitle_remover",
                 "watermark_remover",
                 "sora_watermark",
+                "gemini_watermark_remover",
+                "gemini_watermark_bulk_remover",
                 "ai_voiceover",
                 "translate_and_dub",
                 "roblox_rant",
@@ -1181,12 +2177,16 @@
                   "tool": {
                     "type": "string",
                     "enum": [
+                      "video_upscaler",
                       "ai_clone",
                       "ai_video_generator",
+                      "ai_video_editor",
                       "ai_ad_generator",
                       "ai_image_generator",
                       "image_background_remover",
                       "ai_clipper",
+                      "clip_discovery",
+                      "ai_broll",
                       "ai_captions",
                       "video_to_prompt",
                       "caption_remover",
@@ -1905,6 +2905,82 @@
                     ],
                     "properties": {
                       "tool": {
+                        "const": "video_upscaler"
+                      },
+                      "input": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
+                        "type": "object",
+                        "properties": {
+                          "asset_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "file_name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 255
+                          },
+                          "start_time": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "end_time": {
+                            "type": "number",
+                            "exclusiveMinimum": 0
+                          },
+                          "upscale_factor": {
+                            "anyOf": [
+                              {
+                                "type": "number",
+                                "const": 1
+                              },
+                              {
+                                "type": "number",
+                                "const": 2
+                              },
+                              {
+                                "type": "number",
+                                "const": 4
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "asset_id",
+                          "file_name",
+                          "start_time",
+                          "end_time",
+                          "upscale_factor"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "project_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "maximum_outputs": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 50,
+                        "description": "Clipper output target. Other tools use their fixed output count."
+                      },
+                      "maximum_credits": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Reject if the server estimate exceeds this budget."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "tool",
+                      "input"
+                    ],
+                    "properties": {
+                      "tool": {
                         "const": "ai_clone"
                       },
                       "input": {
@@ -2023,8 +3099,7 @@
                             "type": "string",
                             "enum": [
                               "normal",
-                              "fun",
-                              "spicy"
+                              "fun"
                             ]
                           },
                           "grok_resolution": {
@@ -2105,6 +3180,94 @@
                     ],
                     "properties": {
                       "tool": {
+                        "const": "ai_video_editor"
+                      },
+                      "input": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
+                        "type": "object",
+                        "properties": {
+                          "asset_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "prompt": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4000
+                          },
+                          "model": {
+                            "type": "string",
+                            "enum": [
+                              "wan/2-7-videoedit",
+                              "happyhorse/video-edit",
+                              "runway/aleph",
+                              "gemini-omni-video"
+                            ]
+                          },
+                          "format": {
+                            "type": "string",
+                            "enum": [
+                              "9:16",
+                              "16:9"
+                            ]
+                          },
+                          "duration_seconds": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 15
+                          },
+                          "resolution": {
+                            "type": "string",
+                            "enum": [
+                              "720p",
+                              "1080p",
+                              "4K"
+                            ]
+                          },
+                          "source_duration_seconds": {
+                            "type": "number",
+                            "exclusiveMinimum": 0,
+                            "maximum": 30
+                          }
+                        },
+                        "required": [
+                          "asset_id",
+                          "prompt",
+                          "model",
+                          "format",
+                          "duration_seconds",
+                          "resolution",
+                          "source_duration_seconds"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "project_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "maximum_outputs": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 50,
+                        "description": "Clipper output target. Other tools use their fixed output count."
+                      },
+                      "maximum_credits": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Reject if the server estimate exceeds this budget."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "tool",
+                      "input"
+                    ],
+                    "properties": {
+                      "tool": {
                         "const": "ai_ad_generator"
                       },
                       "input": {
@@ -2148,8 +3311,7 @@
                             "type": "string",
                             "enum": [
                               "normal",
-                              "fun",
-                              "spicy"
+                              "fun"
                             ]
                           },
                           "grok_resolution": {
@@ -2363,8 +3525,35 @@
                     "additionalProperties": false,
                     "required": [
                       "tool",
-                      "input",
-                      "options"
+                      "input"
+                    ],
+                    "not": {
+                      "required": [
+                        "options"
+                      ],
+                      "properties": {
+                        "input": {
+                          "required": [
+                            "options"
+                          ]
+                        }
+                      }
+                    },
+                    "anyOf": [
+                      {
+                        "required": [
+                          "options"
+                        ]
+                      },
+                      {
+                        "properties": {
+                          "input": {
+                            "required": [
+                              "options"
+                            ]
+                          }
+                        }
+                      }
                     ],
                     "properties": {
                       "tool": {
@@ -2383,6 +3572,177 @@
                             "type": "string",
                             "maxLength": 2048,
                             "format": "uri"
+                          },
+                          "options": {
+                            "type": "object",
+                            "properties": {
+                              "maximum_source_bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 2000000000
+                              },
+                              "language": {
+                                "type": "string",
+                                "minLength": 2,
+                                "maxLength": 35
+                              },
+                              "captions_enabled": {
+                                "default": true,
+                                "type": "boolean"
+                              },
+                              "caption_mode": {
+                                "default": "single_word",
+                                "type": "string",
+                                "enum": [
+                                  "single_word",
+                                  "three_word_highlight"
+                                ]
+                              },
+                              "caption_group_size": {
+                                "default": 1,
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 6
+                              },
+                              "caption_preset_id": {
+                                "default": "lit",
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_-]{0,39}$"
+                              },
+                              "caption_style": {
+                                "type": "object",
+                                "properties": {
+                                  "font_family": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 80
+                                  },
+                                  "font_size": {
+                                    "type": "integer",
+                                    "minimum": 24,
+                                    "maximum": 240
+                                  },
+                                  "position_y_percent": {
+                                    "type": "number",
+                                    "minimum": 6,
+                                    "maximum": 94
+                                  },
+                                  "base_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "highlight_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "outline_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "outline_width": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 16
+                                  },
+                                  "background_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "background_opacity": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 100
+                                  },
+                                  "layout_version": {
+                                    "type": "number",
+                                    "const": 2
+                                  },
+                                  "word_spacing": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 12
+                                  }
+                                },
+                                "required": [
+                                  "font_family",
+                                  "font_size",
+                                  "position_y_percent",
+                                  "base_color",
+                                  "highlight_color",
+                                  "outline_color",
+                                  "outline_width",
+                                  "background_color",
+                                  "background_opacity",
+                                  "word_spacing"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "video_layout_mode": {
+                                "default": "blur",
+                                "type": "string",
+                                "enum": [
+                                  "blur",
+                                  "fill",
+                                  "gameplay"
+                                ]
+                              },
+                              "clip_length_mode": {
+                                "default": "auto",
+                                "type": "string",
+                                "enum": [
+                                  "auto",
+                                  "short",
+                                  "medium"
+                                ]
+                              },
+                              "analysis_start_seconds": {
+                                "default": 0,
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 43200
+                              },
+                              "analysis_end_seconds": {
+                                "type": "number",
+                                "exclusiveMinimum": 0,
+                                "maximum": 43200
+                              },
+                              "source_metadata": {
+                                "type": "object",
+                                "properties": {
+                                  "title": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 300
+                                  },
+                                  "creator": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 200
+                                  },
+                                  "thumbnail_url": {
+                                    "type": "string",
+                                    "maxLength": 2048,
+                                    "format": "uri"
+                                  },
+                                  "source_size_bytes": {
+                                    "type": "integer",
+                                    "exclusiveMinimum": 0,
+                                    "maximum": 9007199254740991
+                                  }
+                                },
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "captions_enabled",
+                              "caption_mode",
+                              "caption_group_size",
+                              "caption_preset_id",
+                              "video_layout_mode",
+                              "clip_length_mode",
+                              "analysis_start_seconds"
+                            ],
+                            "additionalProperties": false
                           }
                         },
                         "required": [],
@@ -2581,8 +3941,308 @@
                     "additionalProperties": false,
                     "required": [
                       "tool",
-                      "input",
-                      "options"
+                      "input"
+                    ],
+                    "properties": {
+                      "tool": {
+                        "const": "clip_discovery"
+                      },
+                      "input": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
+                        "type": "object",
+                        "properties": {
+                          "prompt": {
+                            "type": "string",
+                            "minLength": 5,
+                            "maxLength": 600
+                          },
+                          "duration": {
+                            "type": "number",
+                            "exclusiveMinimum": 0,
+                            "maximum": 7200
+                          },
+                          "max_clip_seconds": {
+                            "anyOf": [
+                              {
+                                "type": "number",
+                                "const": 30
+                              },
+                              {
+                                "type": "number",
+                                "const": 60
+                              },
+                              {
+                                "type": "number",
+                                "const": 90
+                              }
+                            ]
+                          },
+                          "cues": {
+                            "minItems": 1,
+                            "maxItems": 6000,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "start": {
+                                  "type": "number",
+                                  "minimum": 0
+                                },
+                                "end": {
+                                  "type": "number",
+                                  "exclusiveMinimum": 0
+                                },
+                                "text": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 2000
+                                }
+                              },
+                              "required": [
+                                "start",
+                                "end",
+                                "text"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "prompt",
+                          "duration",
+                          "max_clip_seconds",
+                          "cues"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "project_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "maximum_outputs": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 50,
+                        "description": "Clipper output target. Other tools use their fixed output count."
+                      },
+                      "maximum_credits": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Reject if the server estimate exceeds this budget."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "tool",
+                      "input"
+                    ],
+                    "not": {
+                      "required": [
+                        "options"
+                      ],
+                      "properties": {
+                        "input": {
+                          "required": [
+                            "options"
+                          ]
+                        }
+                      }
+                    },
+                    "anyOf": [
+                      {
+                        "required": [
+                          "options"
+                        ]
+                      },
+                      {
+                        "properties": {
+                          "input": {
+                            "required": [
+                              "options"
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    "properties": {
+                      "tool": {
+                        "const": "ai_broll"
+                      },
+                      "input": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
+                        "type": "object",
+                        "properties": {
+                          "asset_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "source_url": {
+                            "type": "string",
+                            "maxLength": 2048
+                          },
+                          "options": {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "default": "image",
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video",
+                                  "stock"
+                                ]
+                              },
+                              "captions_enabled": {
+                                "default": false,
+                                "type": "boolean"
+                              },
+                              "start_seconds": {
+                                "default": 0,
+                                "type": "number",
+                                "minimum": 0
+                              },
+                              "end_seconds": {
+                                "type": "number",
+                                "exclusiveMinimum": 0,
+                                "maximum": 43200
+                              },
+                              "max_shots": {
+                                "default": 12,
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 120
+                              },
+                              "style": {
+                                "default": "natural",
+                                "type": "string",
+                                "enum": [
+                                  "natural",
+                                  "cinematic",
+                                  "illustration"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "mode",
+                              "captions_enabled",
+                              "start_seconds",
+                              "end_seconds",
+                              "max_shots",
+                              "style"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [],
+                        "additionalProperties": false
+                      },
+                      "options": {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "default": "image",
+                            "type": "string",
+                            "enum": [
+                              "image",
+                              "video",
+                              "stock"
+                            ]
+                          },
+                          "captions_enabled": {
+                            "default": false,
+                            "type": "boolean"
+                          },
+                          "start_seconds": {
+                            "default": 0,
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "end_seconds": {
+                            "type": "number",
+                            "exclusiveMinimum": 0,
+                            "maximum": 43200
+                          },
+                          "max_shots": {
+                            "default": 12,
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 120
+                          },
+                          "style": {
+                            "default": "natural",
+                            "type": "string",
+                            "enum": [
+                              "natural",
+                              "cinematic",
+                              "illustration"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "mode",
+                          "captions_enabled",
+                          "start_seconds",
+                          "end_seconds",
+                          "max_shots",
+                          "style"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "project_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "maximum_outputs": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 50,
+                        "description": "Clipper output target. Other tools use their fixed output count."
+                      },
+                      "maximum_credits": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Reject if the server estimate exceeds this budget."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "tool",
+                      "input"
+                    ],
+                    "not": {
+                      "required": [
+                        "options"
+                      ],
+                      "properties": {
+                        "input": {
+                          "required": [
+                            "options"
+                          ]
+                        }
+                      }
+                    },
+                    "anyOf": [
+                      {
+                        "required": [
+                          "options"
+                        ]
+                      },
+                      {
+                        "properties": {
+                          "input": {
+                            "required": [
+                              "options"
+                            ]
+                          }
+                        }
+                      }
                     ],
                     "properties": {
                       "tool": {
@@ -2615,6 +4275,116 @@
                           "end_seconds": {
                             "type": "number",
                             "exclusiveMinimum": 0
+                          },
+                          "options": {
+                            "type": "object",
+                            "properties": {
+                              "maximum_source_bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 2000000000
+                              },
+                              "language": {
+                                "type": "string"
+                              },
+                              "target_language": {
+                                "type": "string"
+                              },
+                              "caption_mode": {
+                                "default": "single_word",
+                                "type": "string",
+                                "enum": [
+                                  "single_word",
+                                  "three_word_highlight"
+                                ]
+                              },
+                              "caption_group_size": {
+                                "default": 1,
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 6
+                              },
+                              "caption_preset_id": {
+                                "default": "lit",
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_-]{0,39}$"
+                              },
+                              "caption_style": {
+                                "type": "object",
+                                "properties": {
+                                  "font_family": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 80
+                                  },
+                                  "font_size": {
+                                    "type": "integer",
+                                    "minimum": 24,
+                                    "maximum": 240
+                                  },
+                                  "position_y_percent": {
+                                    "type": "number",
+                                    "minimum": 6,
+                                    "maximum": 94
+                                  },
+                                  "base_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "highlight_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "outline_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "outline_width": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 16
+                                  },
+                                  "background_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "background_opacity": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 100
+                                  },
+                                  "layout_version": {
+                                    "type": "number",
+                                    "const": 2
+                                  },
+                                  "word_spacing": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 12
+                                  }
+                                },
+                                "required": [
+                                  "font_family",
+                                  "font_size",
+                                  "position_y_percent",
+                                  "base_color",
+                                  "highlight_color",
+                                  "outline_color",
+                                  "outline_width",
+                                  "background_color",
+                                  "background_opacity",
+                                  "word_spacing"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "caption_mode",
+                              "caption_group_size",
+                              "caption_preset_id",
+                              "caption_style"
+                            ],
+                            "additionalProperties": false
                           }
                         },
                         "required": [
@@ -3128,6 +4898,102 @@
                         "required": [
                           "source_url",
                           "file_name"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "project_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "maximum_outputs": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 50,
+                        "description": "Clipper output target. Other tools use their fixed output count."
+                      },
+                      "maximum_credits": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Reject if the server estimate exceeds this budget."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "tool",
+                      "input"
+                    ],
+                    "properties": {
+                      "tool": {
+                        "const": "gemini_watermark_remover"
+                      },
+                      "input": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
+                        "type": "object",
+                        "properties": {
+                          "input_asset_ids": {
+                            "minItems": 1,
+                            "maxItems": 1,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            }
+                          }
+                        },
+                        "required": [
+                          "input_asset_ids"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "project_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "maximum_outputs": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 50,
+                        "description": "Clipper output target. Other tools use their fixed output count."
+                      },
+                      "maximum_credits": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Reject if the server estimate exceeds this budget."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "tool",
+                      "input"
+                    ],
+                    "properties": {
+                      "tool": {
+                        "const": "gemini_watermark_bulk_remover"
+                      },
+                      "input": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
+                        "type": "object",
+                        "properties": {
+                          "input_asset_ids": {
+                            "minItems": 1,
+                            "maxItems": 50,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            }
+                          }
+                        },
+                        "required": [
+                          "input_asset_ids"
                         ],
                         "additionalProperties": false
                       },
@@ -4699,6 +6565,82 @@
                     ],
                     "properties": {
                       "tool": {
+                        "const": "video_upscaler"
+                      },
+                      "input": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
+                        "type": "object",
+                        "properties": {
+                          "asset_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "file_name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 255
+                          },
+                          "start_time": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "end_time": {
+                            "type": "number",
+                            "exclusiveMinimum": 0
+                          },
+                          "upscale_factor": {
+                            "anyOf": [
+                              {
+                                "type": "number",
+                                "const": 1
+                              },
+                              {
+                                "type": "number",
+                                "const": 2
+                              },
+                              {
+                                "type": "number",
+                                "const": 4
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "asset_id",
+                          "file_name",
+                          "start_time",
+                          "end_time",
+                          "upscale_factor"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "project_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "maximum_outputs": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 50,
+                        "description": "Clipper output target. Other tools use their fixed output count."
+                      },
+                      "maximum_credits": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Reject if the server estimate exceeds this budget."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "tool",
+                      "input"
+                    ],
+                    "properties": {
+                      "tool": {
                         "const": "ai_clone"
                       },
                       "input": {
@@ -4817,8 +6759,7 @@
                             "type": "string",
                             "enum": [
                               "normal",
-                              "fun",
-                              "spicy"
+                              "fun"
                             ]
                           },
                           "grok_resolution": {
@@ -4899,6 +6840,94 @@
                     ],
                     "properties": {
                       "tool": {
+                        "const": "ai_video_editor"
+                      },
+                      "input": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
+                        "type": "object",
+                        "properties": {
+                          "asset_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "prompt": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4000
+                          },
+                          "model": {
+                            "type": "string",
+                            "enum": [
+                              "wan/2-7-videoedit",
+                              "happyhorse/video-edit",
+                              "runway/aleph",
+                              "gemini-omni-video"
+                            ]
+                          },
+                          "format": {
+                            "type": "string",
+                            "enum": [
+                              "9:16",
+                              "16:9"
+                            ]
+                          },
+                          "duration_seconds": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 15
+                          },
+                          "resolution": {
+                            "type": "string",
+                            "enum": [
+                              "720p",
+                              "1080p",
+                              "4K"
+                            ]
+                          },
+                          "source_duration_seconds": {
+                            "type": "number",
+                            "exclusiveMinimum": 0,
+                            "maximum": 30
+                          }
+                        },
+                        "required": [
+                          "asset_id",
+                          "prompt",
+                          "model",
+                          "format",
+                          "duration_seconds",
+                          "resolution",
+                          "source_duration_seconds"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "project_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "maximum_outputs": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 50,
+                        "description": "Clipper output target. Other tools use their fixed output count."
+                      },
+                      "maximum_credits": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Reject if the server estimate exceeds this budget."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "tool",
+                      "input"
+                    ],
+                    "properties": {
+                      "tool": {
                         "const": "ai_ad_generator"
                       },
                       "input": {
@@ -4942,8 +6971,7 @@
                             "type": "string",
                             "enum": [
                               "normal",
-                              "fun",
-                              "spicy"
+                              "fun"
                             ]
                           },
                           "grok_resolution": {
@@ -5157,8 +7185,35 @@
                     "additionalProperties": false,
                     "required": [
                       "tool",
-                      "input",
-                      "options"
+                      "input"
+                    ],
+                    "not": {
+                      "required": [
+                        "options"
+                      ],
+                      "properties": {
+                        "input": {
+                          "required": [
+                            "options"
+                          ]
+                        }
+                      }
+                    },
+                    "anyOf": [
+                      {
+                        "required": [
+                          "options"
+                        ]
+                      },
+                      {
+                        "properties": {
+                          "input": {
+                            "required": [
+                              "options"
+                            ]
+                          }
+                        }
+                      }
                     ],
                     "properties": {
                       "tool": {
@@ -5177,6 +7232,177 @@
                             "type": "string",
                             "maxLength": 2048,
                             "format": "uri"
+                          },
+                          "options": {
+                            "type": "object",
+                            "properties": {
+                              "maximum_source_bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 2000000000
+                              },
+                              "language": {
+                                "type": "string",
+                                "minLength": 2,
+                                "maxLength": 35
+                              },
+                              "captions_enabled": {
+                                "default": true,
+                                "type": "boolean"
+                              },
+                              "caption_mode": {
+                                "default": "single_word",
+                                "type": "string",
+                                "enum": [
+                                  "single_word",
+                                  "three_word_highlight"
+                                ]
+                              },
+                              "caption_group_size": {
+                                "default": 1,
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 6
+                              },
+                              "caption_preset_id": {
+                                "default": "lit",
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_-]{0,39}$"
+                              },
+                              "caption_style": {
+                                "type": "object",
+                                "properties": {
+                                  "font_family": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 80
+                                  },
+                                  "font_size": {
+                                    "type": "integer",
+                                    "minimum": 24,
+                                    "maximum": 240
+                                  },
+                                  "position_y_percent": {
+                                    "type": "number",
+                                    "minimum": 6,
+                                    "maximum": 94
+                                  },
+                                  "base_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "highlight_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "outline_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "outline_width": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 16
+                                  },
+                                  "background_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "background_opacity": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 100
+                                  },
+                                  "layout_version": {
+                                    "type": "number",
+                                    "const": 2
+                                  },
+                                  "word_spacing": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 12
+                                  }
+                                },
+                                "required": [
+                                  "font_family",
+                                  "font_size",
+                                  "position_y_percent",
+                                  "base_color",
+                                  "highlight_color",
+                                  "outline_color",
+                                  "outline_width",
+                                  "background_color",
+                                  "background_opacity",
+                                  "word_spacing"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "video_layout_mode": {
+                                "default": "blur",
+                                "type": "string",
+                                "enum": [
+                                  "blur",
+                                  "fill",
+                                  "gameplay"
+                                ]
+                              },
+                              "clip_length_mode": {
+                                "default": "auto",
+                                "type": "string",
+                                "enum": [
+                                  "auto",
+                                  "short",
+                                  "medium"
+                                ]
+                              },
+                              "analysis_start_seconds": {
+                                "default": 0,
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 43200
+                              },
+                              "analysis_end_seconds": {
+                                "type": "number",
+                                "exclusiveMinimum": 0,
+                                "maximum": 43200
+                              },
+                              "source_metadata": {
+                                "type": "object",
+                                "properties": {
+                                  "title": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 300
+                                  },
+                                  "creator": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 200
+                                  },
+                                  "thumbnail_url": {
+                                    "type": "string",
+                                    "maxLength": 2048,
+                                    "format": "uri"
+                                  },
+                                  "source_size_bytes": {
+                                    "type": "integer",
+                                    "exclusiveMinimum": 0,
+                                    "maximum": 9007199254740991
+                                  }
+                                },
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "captions_enabled",
+                              "caption_mode",
+                              "caption_group_size",
+                              "caption_preset_id",
+                              "video_layout_mode",
+                              "clip_length_mode",
+                              "analysis_start_seconds"
+                            ],
+                            "additionalProperties": false
                           }
                         },
                         "required": [],
@@ -5375,8 +7601,308 @@
                     "additionalProperties": false,
                     "required": [
                       "tool",
-                      "input",
-                      "options"
+                      "input"
+                    ],
+                    "properties": {
+                      "tool": {
+                        "const": "clip_discovery"
+                      },
+                      "input": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
+                        "type": "object",
+                        "properties": {
+                          "prompt": {
+                            "type": "string",
+                            "minLength": 5,
+                            "maxLength": 600
+                          },
+                          "duration": {
+                            "type": "number",
+                            "exclusiveMinimum": 0,
+                            "maximum": 7200
+                          },
+                          "max_clip_seconds": {
+                            "anyOf": [
+                              {
+                                "type": "number",
+                                "const": 30
+                              },
+                              {
+                                "type": "number",
+                                "const": 60
+                              },
+                              {
+                                "type": "number",
+                                "const": 90
+                              }
+                            ]
+                          },
+                          "cues": {
+                            "minItems": 1,
+                            "maxItems": 6000,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "start": {
+                                  "type": "number",
+                                  "minimum": 0
+                                },
+                                "end": {
+                                  "type": "number",
+                                  "exclusiveMinimum": 0
+                                },
+                                "text": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 2000
+                                }
+                              },
+                              "required": [
+                                "start",
+                                "end",
+                                "text"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "prompt",
+                          "duration",
+                          "max_clip_seconds",
+                          "cues"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "project_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "maximum_outputs": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 50,
+                        "description": "Clipper output target. Other tools use their fixed output count."
+                      },
+                      "maximum_credits": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Reject if the server estimate exceeds this budget."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "tool",
+                      "input"
+                    ],
+                    "not": {
+                      "required": [
+                        "options"
+                      ],
+                      "properties": {
+                        "input": {
+                          "required": [
+                            "options"
+                          ]
+                        }
+                      }
+                    },
+                    "anyOf": [
+                      {
+                        "required": [
+                          "options"
+                        ]
+                      },
+                      {
+                        "properties": {
+                          "input": {
+                            "required": [
+                              "options"
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    "properties": {
+                      "tool": {
+                        "const": "ai_broll"
+                      },
+                      "input": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
+                        "type": "object",
+                        "properties": {
+                          "asset_id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "source_url": {
+                            "type": "string",
+                            "maxLength": 2048
+                          },
+                          "options": {
+                            "type": "object",
+                            "properties": {
+                              "mode": {
+                                "default": "image",
+                                "type": "string",
+                                "enum": [
+                                  "image",
+                                  "video",
+                                  "stock"
+                                ]
+                              },
+                              "captions_enabled": {
+                                "default": false,
+                                "type": "boolean"
+                              },
+                              "start_seconds": {
+                                "default": 0,
+                                "type": "number",
+                                "minimum": 0
+                              },
+                              "end_seconds": {
+                                "type": "number",
+                                "exclusiveMinimum": 0,
+                                "maximum": 43200
+                              },
+                              "max_shots": {
+                                "default": 12,
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 120
+                              },
+                              "style": {
+                                "default": "natural",
+                                "type": "string",
+                                "enum": [
+                                  "natural",
+                                  "cinematic",
+                                  "illustration"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "mode",
+                              "captions_enabled",
+                              "start_seconds",
+                              "end_seconds",
+                              "max_shots",
+                              "style"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [],
+                        "additionalProperties": false
+                      },
+                      "options": {
+                        "type": "object",
+                        "properties": {
+                          "mode": {
+                            "default": "image",
+                            "type": "string",
+                            "enum": [
+                              "image",
+                              "video",
+                              "stock"
+                            ]
+                          },
+                          "captions_enabled": {
+                            "default": false,
+                            "type": "boolean"
+                          },
+                          "start_seconds": {
+                            "default": 0,
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "end_seconds": {
+                            "type": "number",
+                            "exclusiveMinimum": 0,
+                            "maximum": 43200
+                          },
+                          "max_shots": {
+                            "default": 12,
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 120
+                          },
+                          "style": {
+                            "default": "natural",
+                            "type": "string",
+                            "enum": [
+                              "natural",
+                              "cinematic",
+                              "illustration"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "mode",
+                          "captions_enabled",
+                          "start_seconds",
+                          "end_seconds",
+                          "max_shots",
+                          "style"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "project_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "maximum_outputs": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 50,
+                        "description": "Clipper output target. Other tools use their fixed output count."
+                      },
+                      "maximum_credits": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Reject if the server estimate exceeds this budget."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "tool",
+                      "input"
+                    ],
+                    "not": {
+                      "required": [
+                        "options"
+                      ],
+                      "properties": {
+                        "input": {
+                          "required": [
+                            "options"
+                          ]
+                        }
+                      }
+                    },
+                    "anyOf": [
+                      {
+                        "required": [
+                          "options"
+                        ]
+                      },
+                      {
+                        "properties": {
+                          "input": {
+                            "required": [
+                              "options"
+                            ]
+                          }
+                        }
+                      }
                     ],
                     "properties": {
                       "tool": {
@@ -5409,6 +7935,116 @@
                           "end_seconds": {
                             "type": "number",
                             "exclusiveMinimum": 0
+                          },
+                          "options": {
+                            "type": "object",
+                            "properties": {
+                              "maximum_source_bytes": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0,
+                                "maximum": 2000000000
+                              },
+                              "language": {
+                                "type": "string"
+                              },
+                              "target_language": {
+                                "type": "string"
+                              },
+                              "caption_mode": {
+                                "default": "single_word",
+                                "type": "string",
+                                "enum": [
+                                  "single_word",
+                                  "three_word_highlight"
+                                ]
+                              },
+                              "caption_group_size": {
+                                "default": 1,
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 6
+                              },
+                              "caption_preset_id": {
+                                "default": "lit",
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9_-]{0,39}$"
+                              },
+                              "caption_style": {
+                                "type": "object",
+                                "properties": {
+                                  "font_family": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 80
+                                  },
+                                  "font_size": {
+                                    "type": "integer",
+                                    "minimum": 24,
+                                    "maximum": 240
+                                  },
+                                  "position_y_percent": {
+                                    "type": "number",
+                                    "minimum": 6,
+                                    "maximum": 94
+                                  },
+                                  "base_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "highlight_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "outline_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "outline_width": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 16
+                                  },
+                                  "background_color": {
+                                    "type": "string",
+                                    "pattern": "^#[0-9A-F]{6}$"
+                                  },
+                                  "background_opacity": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 100
+                                  },
+                                  "layout_version": {
+                                    "type": "number",
+                                    "const": 2
+                                  },
+                                  "word_spacing": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 12
+                                  }
+                                },
+                                "required": [
+                                  "font_family",
+                                  "font_size",
+                                  "position_y_percent",
+                                  "base_color",
+                                  "highlight_color",
+                                  "outline_color",
+                                  "outline_width",
+                                  "background_color",
+                                  "background_opacity",
+                                  "word_spacing"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "caption_mode",
+                              "caption_group_size",
+                              "caption_preset_id",
+                              "caption_style"
+                            ],
+                            "additionalProperties": false
                           }
                         },
                         "required": [
@@ -5922,6 +8558,102 @@
                         "required": [
                           "source_url",
                           "file_name"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "project_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "maximum_outputs": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 50,
+                        "description": "Clipper output target. Other tools use their fixed output count."
+                      },
+                      "maximum_credits": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Reject if the server estimate exceeds this budget."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "tool",
+                      "input"
+                    ],
+                    "properties": {
+                      "tool": {
+                        "const": "gemini_watermark_remover"
+                      },
+                      "input": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
+                        "type": "object",
+                        "properties": {
+                          "input_asset_ids": {
+                            "minItems": 1,
+                            "maxItems": 1,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            }
+                          }
+                        },
+                        "required": [
+                          "input_asset_ids"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "project_id": {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      "maximum_outputs": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 50,
+                        "description": "Clipper output target. Other tools use their fixed output count."
+                      },
+                      "maximum_credits": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "description": "Reject if the server estimate exceeds this budget."
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "tool",
+                      "input"
+                    ],
+                    "properties": {
+                      "tool": {
+                        "const": "gemini_watermark_bulk_remover"
+                      },
+                      "input": {
+                        "$schema": "https://json-schema.org/draft/2020-12/schema",
+                        "type": "object",
+                        "properties": {
+                          "input_asset_ids": {
+                            "minItems": 1,
+                            "maxItems": 50,
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            }
+                          }
+                        },
+                        "required": [
+                          "input_asset_ids"
                         ],
                         "additionalProperties": false
                       },
@@ -7747,6 +10479,17 @@
                         }
                       ]
                     },
+                    "result": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
                     "outputs": {
                       "type": "array",
                       "items": {
@@ -7797,6 +10540,32 @@
                               "string",
                               "null"
                             ]
+                          },
+                          "language_code": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "transcript_timestamped_text": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "transcript_cues": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "additionalProperties": true
+                            }
+                          },
+                          "transcript_words": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "additionalProperties": true
+                            }
                           }
                         },
                         "required": [
@@ -7808,7 +10577,11 @@
                           "retained_until",
                           "title",
                           "text",
-                          "project_id"
+                          "project_id",
+                          "language_code",
+                          "transcript_timestamped_text",
+                          "transcript_cues",
+                          "transcript_words"
                         ]
                       }
                     }
@@ -7823,6 +10596,7 @@
                     "finished_at",
                     "credits",
                     "error",
+                    "result",
                     "outputs"
                   ]
                 }
@@ -9713,6 +12487,82 @@
             ],
             "properties": {
               "tool": {
+                "const": "video_upscaler"
+              },
+              "input": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "asset_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "file_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "start_time": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "end_time": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "upscale_factor": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "const": 1
+                      },
+                      {
+                        "type": "number",
+                        "const": 2
+                      },
+                      {
+                        "type": "number",
+                        "const": 4
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "asset_id",
+                  "file_name",
+                  "start_time",
+                  "end_time",
+                  "upscale_factor"
+                ],
+                "additionalProperties": false
+              },
+              "project_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "maximum_outputs": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50,
+                "description": "Clipper output target. Other tools use their fixed output count."
+              },
+              "maximum_credits": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Reject if the server estimate exceeds this budget."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tool",
+              "input"
+            ],
+            "properties": {
+              "tool": {
                 "const": "ai_clone"
               },
               "input": {
@@ -9831,8 +12681,7 @@
                     "type": "string",
                     "enum": [
                       "normal",
-                      "fun",
-                      "spicy"
+                      "fun"
                     ]
                   },
                   "grok_resolution": {
@@ -9913,6 +12762,94 @@
             ],
             "properties": {
               "tool": {
+                "const": "ai_video_editor"
+              },
+              "input": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "asset_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4000
+                  },
+                  "model": {
+                    "type": "string",
+                    "enum": [
+                      "wan/2-7-videoedit",
+                      "happyhorse/video-edit",
+                      "runway/aleph",
+                      "gemini-omni-video"
+                    ]
+                  },
+                  "format": {
+                    "type": "string",
+                    "enum": [
+                      "9:16",
+                      "16:9"
+                    ]
+                  },
+                  "duration_seconds": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 15
+                  },
+                  "resolution": {
+                    "type": "string",
+                    "enum": [
+                      "720p",
+                      "1080p",
+                      "4K"
+                    ]
+                  },
+                  "source_duration_seconds": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 30
+                  }
+                },
+                "required": [
+                  "asset_id",
+                  "prompt",
+                  "model",
+                  "format",
+                  "duration_seconds",
+                  "resolution",
+                  "source_duration_seconds"
+                ],
+                "additionalProperties": false
+              },
+              "project_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "maximum_outputs": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50,
+                "description": "Clipper output target. Other tools use their fixed output count."
+              },
+              "maximum_credits": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Reject if the server estimate exceeds this budget."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tool",
+              "input"
+            ],
+            "properties": {
+              "tool": {
                 "const": "ai_ad_generator"
               },
               "input": {
@@ -9956,8 +12893,7 @@
                     "type": "string",
                     "enum": [
                       "normal",
-                      "fun",
-                      "spicy"
+                      "fun"
                     ]
                   },
                   "grok_resolution": {
@@ -10171,8 +13107,35 @@
             "additionalProperties": false,
             "required": [
               "tool",
-              "input",
-              "options"
+              "input"
+            ],
+            "not": {
+              "required": [
+                "options"
+              ],
+              "properties": {
+                "input": {
+                  "required": [
+                    "options"
+                  ]
+                }
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "options"
+                ]
+              },
+              {
+                "properties": {
+                  "input": {
+                    "required": [
+                      "options"
+                    ]
+                  }
+                }
+              }
             ],
             "properties": {
               "tool": {
@@ -10191,6 +13154,177 @@
                     "type": "string",
                     "maxLength": 2048,
                     "format": "uri"
+                  },
+                  "options": {
+                    "type": "object",
+                    "properties": {
+                      "maximum_source_bytes": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 2000000000
+                      },
+                      "language": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 35
+                      },
+                      "captions_enabled": {
+                        "default": true,
+                        "type": "boolean"
+                      },
+                      "caption_mode": {
+                        "default": "single_word",
+                        "type": "string",
+                        "enum": [
+                          "single_word",
+                          "three_word_highlight"
+                        ]
+                      },
+                      "caption_group_size": {
+                        "default": 1,
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 6
+                      },
+                      "caption_preset_id": {
+                        "default": "lit",
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_-]{0,39}$"
+                      },
+                      "caption_style": {
+                        "type": "object",
+                        "properties": {
+                          "font_family": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 80
+                          },
+                          "font_size": {
+                            "type": "integer",
+                            "minimum": 24,
+                            "maximum": 240
+                          },
+                          "position_y_percent": {
+                            "type": "number",
+                            "minimum": 6,
+                            "maximum": 94
+                          },
+                          "base_color": {
+                            "type": "string",
+                            "pattern": "^#[0-9A-F]{6}$"
+                          },
+                          "highlight_color": {
+                            "type": "string",
+                            "pattern": "^#[0-9A-F]{6}$"
+                          },
+                          "outline_color": {
+                            "type": "string",
+                            "pattern": "^#[0-9A-F]{6}$"
+                          },
+                          "outline_width": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 16
+                          },
+                          "background_color": {
+                            "type": "string",
+                            "pattern": "^#[0-9A-F]{6}$"
+                          },
+                          "background_opacity": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 100
+                          },
+                          "layout_version": {
+                            "type": "number",
+                            "const": 2
+                          },
+                          "word_spacing": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 12
+                          }
+                        },
+                        "required": [
+                          "font_family",
+                          "font_size",
+                          "position_y_percent",
+                          "base_color",
+                          "highlight_color",
+                          "outline_color",
+                          "outline_width",
+                          "background_color",
+                          "background_opacity",
+                          "word_spacing"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "video_layout_mode": {
+                        "default": "blur",
+                        "type": "string",
+                        "enum": [
+                          "blur",
+                          "fill",
+                          "gameplay"
+                        ]
+                      },
+                      "clip_length_mode": {
+                        "default": "auto",
+                        "type": "string",
+                        "enum": [
+                          "auto",
+                          "short",
+                          "medium"
+                        ]
+                      },
+                      "analysis_start_seconds": {
+                        "default": 0,
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 43200
+                      },
+                      "analysis_end_seconds": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "maximum": 43200
+                      },
+                      "source_metadata": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 300
+                          },
+                          "creator": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                          },
+                          "thumbnail_url": {
+                            "type": "string",
+                            "maxLength": 2048,
+                            "format": "uri"
+                          },
+                          "source_size_bytes": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0,
+                            "maximum": 9007199254740991
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "captions_enabled",
+                      "caption_mode",
+                      "caption_group_size",
+                      "caption_preset_id",
+                      "video_layout_mode",
+                      "clip_length_mode",
+                      "analysis_start_seconds"
+                    ],
+                    "additionalProperties": false
                   }
                 },
                 "required": [],
@@ -10389,8 +13523,308 @@
             "additionalProperties": false,
             "required": [
               "tool",
-              "input",
-              "options"
+              "input"
+            ],
+            "properties": {
+              "tool": {
+                "const": "clip_discovery"
+              },
+              "input": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 600
+                  },
+                  "duration": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 7200
+                  },
+                  "max_clip_seconds": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "const": 30
+                      },
+                      {
+                        "type": "number",
+                        "const": 60
+                      },
+                      {
+                        "type": "number",
+                        "const": 90
+                      }
+                    ]
+                  },
+                  "cues": {
+                    "minItems": 1,
+                    "maxItems": 6000,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "start": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "end": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        "text": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2000
+                        }
+                      },
+                      "required": [
+                        "start",
+                        "end",
+                        "text"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "prompt",
+                  "duration",
+                  "max_clip_seconds",
+                  "cues"
+                ],
+                "additionalProperties": false
+              },
+              "project_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "maximum_outputs": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50,
+                "description": "Clipper output target. Other tools use their fixed output count."
+              },
+              "maximum_credits": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Reject if the server estimate exceeds this budget."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tool",
+              "input"
+            ],
+            "not": {
+              "required": [
+                "options"
+              ],
+              "properties": {
+                "input": {
+                  "required": [
+                    "options"
+                  ]
+                }
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "options"
+                ]
+              },
+              {
+                "properties": {
+                  "input": {
+                    "required": [
+                      "options"
+                    ]
+                  }
+                }
+              }
+            ],
+            "properties": {
+              "tool": {
+                "const": "ai_broll"
+              },
+              "input": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "asset_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "source_url": {
+                    "type": "string",
+                    "maxLength": 2048
+                  },
+                  "options": {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "default": "image",
+                        "type": "string",
+                        "enum": [
+                          "image",
+                          "video",
+                          "stock"
+                        ]
+                      },
+                      "captions_enabled": {
+                        "default": false,
+                        "type": "boolean"
+                      },
+                      "start_seconds": {
+                        "default": 0,
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "end_seconds": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "maximum": 43200
+                      },
+                      "max_shots": {
+                        "default": 12,
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 120
+                      },
+                      "style": {
+                        "default": "natural",
+                        "type": "string",
+                        "enum": [
+                          "natural",
+                          "cinematic",
+                          "illustration"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "captions_enabled",
+                      "start_seconds",
+                      "end_seconds",
+                      "max_shots",
+                      "style"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [],
+                "additionalProperties": false
+              },
+              "options": {
+                "type": "object",
+                "properties": {
+                  "mode": {
+                    "default": "image",
+                    "type": "string",
+                    "enum": [
+                      "image",
+                      "video",
+                      "stock"
+                    ]
+                  },
+                  "captions_enabled": {
+                    "default": false,
+                    "type": "boolean"
+                  },
+                  "start_seconds": {
+                    "default": 0,
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "end_seconds": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 43200
+                  },
+                  "max_shots": {
+                    "default": 12,
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 120
+                  },
+                  "style": {
+                    "default": "natural",
+                    "type": "string",
+                    "enum": [
+                      "natural",
+                      "cinematic",
+                      "illustration"
+                    ]
+                  }
+                },
+                "required": [
+                  "mode",
+                  "captions_enabled",
+                  "start_seconds",
+                  "end_seconds",
+                  "max_shots",
+                  "style"
+                ],
+                "additionalProperties": false
+              },
+              "project_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "maximum_outputs": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50,
+                "description": "Clipper output target. Other tools use their fixed output count."
+              },
+              "maximum_credits": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Reject if the server estimate exceeds this budget."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tool",
+              "input"
+            ],
+            "not": {
+              "required": [
+                "options"
+              ],
+              "properties": {
+                "input": {
+                  "required": [
+                    "options"
+                  ]
+                }
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "options"
+                ]
+              },
+              {
+                "properties": {
+                  "input": {
+                    "required": [
+                      "options"
+                    ]
+                  }
+                }
+              }
             ],
             "properties": {
               "tool": {
@@ -10423,6 +13857,116 @@
                   "end_seconds": {
                     "type": "number",
                     "exclusiveMinimum": 0
+                  },
+                  "options": {
+                    "type": "object",
+                    "properties": {
+                      "maximum_source_bytes": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 2000000000
+                      },
+                      "language": {
+                        "type": "string"
+                      },
+                      "target_language": {
+                        "type": "string"
+                      },
+                      "caption_mode": {
+                        "default": "single_word",
+                        "type": "string",
+                        "enum": [
+                          "single_word",
+                          "three_word_highlight"
+                        ]
+                      },
+                      "caption_group_size": {
+                        "default": 1,
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 6
+                      },
+                      "caption_preset_id": {
+                        "default": "lit",
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_-]{0,39}$"
+                      },
+                      "caption_style": {
+                        "type": "object",
+                        "properties": {
+                          "font_family": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 80
+                          },
+                          "font_size": {
+                            "type": "integer",
+                            "minimum": 24,
+                            "maximum": 240
+                          },
+                          "position_y_percent": {
+                            "type": "number",
+                            "minimum": 6,
+                            "maximum": 94
+                          },
+                          "base_color": {
+                            "type": "string",
+                            "pattern": "^#[0-9A-F]{6}$"
+                          },
+                          "highlight_color": {
+                            "type": "string",
+                            "pattern": "^#[0-9A-F]{6}$"
+                          },
+                          "outline_color": {
+                            "type": "string",
+                            "pattern": "^#[0-9A-F]{6}$"
+                          },
+                          "outline_width": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 16
+                          },
+                          "background_color": {
+                            "type": "string",
+                            "pattern": "^#[0-9A-F]{6}$"
+                          },
+                          "background_opacity": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 100
+                          },
+                          "layout_version": {
+                            "type": "number",
+                            "const": 2
+                          },
+                          "word_spacing": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 12
+                          }
+                        },
+                        "required": [
+                          "font_family",
+                          "font_size",
+                          "position_y_percent",
+                          "base_color",
+                          "highlight_color",
+                          "outline_color",
+                          "outline_width",
+                          "background_color",
+                          "background_opacity",
+                          "word_spacing"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "caption_mode",
+                      "caption_group_size",
+                      "caption_preset_id",
+                      "caption_style"
+                    ],
+                    "additionalProperties": false
                   }
                 },
                 "required": [
@@ -10936,6 +14480,102 @@
                 "required": [
                   "source_url",
                   "file_name"
+                ],
+                "additionalProperties": false
+              },
+              "project_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "maximum_outputs": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50,
+                "description": "Clipper output target. Other tools use their fixed output count."
+              },
+              "maximum_credits": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Reject if the server estimate exceeds this budget."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tool",
+              "input"
+            ],
+            "properties": {
+              "tool": {
+                "const": "gemini_watermark_remover"
+              },
+              "input": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "input_asset_ids": {
+                    "minItems": 1,
+                    "maxItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  }
+                },
+                "required": [
+                  "input_asset_ids"
+                ],
+                "additionalProperties": false
+              },
+              "project_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "maximum_outputs": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50,
+                "description": "Clipper output target. Other tools use their fixed output count."
+              },
+              "maximum_credits": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Reject if the server estimate exceeds this budget."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tool",
+              "input"
+            ],
+            "properties": {
+              "tool": {
+                "const": "gemini_watermark_bulk_remover"
+              },
+              "input": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "input_asset_ids": {
+                    "minItems": 1,
+                    "maxItems": 50,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  }
+                },
+                "required": [
+                  "input_asset_ids"
                 ],
                 "additionalProperties": false
               },

@@ -1,0 +1,12 @@
+---
+title: "Updated tools"
+description: "Transcript searches, B-Roll and Gemini image workflows."
+---
+
+Find Clips by Prompt accepts a prompt, duration, max_clip_seconds and ordered timestamped transcript cues, then returns selections in result.clips. Transcription jobs expose outputs[].transcript_cues for this input. It costs one credit per started ten minutes, minimum one. A recommendation is not an exported video; submit a separate trimming or clipping job for an approved selected range.
+
+AI B-Roll accepts one asset_id or supported source_url with options. Quotes reuse the same existing approved deployment tariff as the browser; API access does not require a separate pricing approval. After completion, read or edit /broll/\{id\}, quote replacement shots at /broll/\{id\}/regenerate-quote, submit them at /broll/\{id\}/regenerate with maximum_credits, and export the exact revision at /broll/\{id\}/exports. Regenerations and exports require Idempotency-Key. B-Roll exports are free.
+
+The single and bulk Gemini tools accept one or 1–50 unique input_asset_ids. Upload JPEG, PNG or WebP files up to 10 MiB each. They use zero credits and return one PNG per source. Inspect result.images: applied, needs_review or unsupported_watermark_style. Only applied indicates removal was applied.
+
+Video Upscaler, AI Video Editor, video/image/ad generation, captions, voiceover and dubbing use their latest tool schemas and live catalogs. Quote each exact operation before submission.

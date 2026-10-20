@@ -1,0 +1,98 @@
+---
+title: "Find Clips by Prompt"
+description: "Describe a moment to find matching video clips, adjust their timing, and download them."
+---
+
+Describe a moment to find matching video clips, adjust their timing, and download them.
+
+<Info>Public beta. Read the live tool catalog before choosing models, voices, presets, or source formats.</Info>
+
+Submit `POST /jobs` with `tool: "clip_discovery"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
+
+Required plan tier: **starter**. API access additionally requires an active paid subscription.
+
+| Input field | Required | Type | Details |
+|---|---|---|---|
+| `prompt` | Yes | string | See the full schema below. |
+| `duration` | Yes | number | See the full schema below. |
+| `max_clip_seconds` | Yes | union | See the full schema below. |
+| `cues` | Yes | array | See the full schema below. |
+
+## Complete input schema
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "prompt": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 600
+    },
+    "duration": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 7200
+    },
+    "max_clip_seconds": {
+      "anyOf": [
+        {
+          "type": "number",
+          "const": 30
+        },
+        {
+          "type": "number",
+          "const": 60
+        },
+        {
+          "type": "number",
+          "const": 90
+        }
+      ]
+    },
+    "cues": {
+      "minItems": 1,
+      "maxItems": 6000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "number",
+            "minimum": 0
+          },
+          "end": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "prompt",
+    "duration",
+    "max_clip_seconds",
+    "cues"
+  ],
+  "additionalProperties": false
+}
+```
+
+Inspect `GET /tools/clip_discovery/catalog` for supported choices. Runtime checks also validate cross-field rules, source ownership and tool-specific URL restrictions. Quote the exact request before submission.
+
+Uploads: up to 2147483648 bytes before deployment-specific caps; MIME types: video/mp4, video/quicktime, video/webm.
+
+Results are returned through `GET /jobs/{id}`; output assets can be passed to the next tool. [Job lifecycle](/concepts/jobs).
