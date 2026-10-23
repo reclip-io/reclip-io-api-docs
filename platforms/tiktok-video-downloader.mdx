@@ -1,0 +1,152 @@
+---
+title: "TikTok Video Downloader API"
+description: "Download supported TikTok video URLs through REST or MCP. Set a download limit and retrieve a workspace video asset for archiving or later edits."
+---
+
+Download supported TikTok video URLs through REST or MCP. Set a download limit and retrieve a workspace video asset for archiving or later edits.
+
+<Info>Public beta. This guide uses the existing `video_downloader` tool with `POST /api/v1/jobs`. Platform-specific guides share the same workspace API keys, credit balance, and REST/MCP contracts.</Info>
+
+## Supported TikTok source
+
+Supply an accessible HTTPS TikTok video URL and platform: tiktok. The URL hostname must belong to tiktok.com. The example uses an individual creator video URL; replace it with an authorized video that is available to the source provider.
+
+The tool accepts supported individual videos; it does not crawl TikTok feeds, enumerate creator profiles, publish posts, or guarantee watermark-free video. Direct TikTok URL inputs are not accepted by AI Clipper or AI B-Roll.
+
+## Configure the request
+
+Set maximum_download_bytes before importing the source. Use format_id: null for supported default selection, or inspect the live catalog for available source format choices. Source metadata fields can remain null when unknown.
+
+Inspect `GET /api/v1/tools/video_downloader/catalog` for the current schema and supported options. Replace the example source URL and use a credit cap that you have approved for this job.
+
+```json
+{
+  "tool": "video_downloader",
+  "input": {
+    "source_url": "https://www.tiktok.com/@creator/video/1234567890123456789",
+    "platform": "tiktok",
+    "file_name": "tiktok-video.mp4",
+    "format_id": null,
+    "maximum_download_bytes": 100000000,
+    "has_audio": null,
+    "source_title": null,
+    "source_creator": null,
+    "source_thumbnail_url": null,
+    "source_duration_seconds": null
+  },
+  "maximum_credits": 100
+}
+```
+
+## Quote, submit, and check the job
+
+Save the JSON request above as `reclip-job.json`. Set `RECLIP_API_KEY` and a unique `RECLIP_REQUEST_ID` in your environment, then run one client example. Reuse the same request ID only when retrying the same submission. These examples quote before submitting and stop if the estimate is unaffordable or exceeds the selected credit cap.
+
+<CodeGroup>
+```bash cURL
+set -e
+: "${RECLIP_API_KEY:?Set your workspace API key}"
+: "${RECLIP_REQUEST_ID:?Set a unique ID for this job}"
+BASE="https://www.reclip.io/api/v1"
+curl --fail-with-body -sS "$BASE/jobs/quote" \
+  -H "Authorization: Bearer $RECLIP_API_KEY" \
+  -H "Content-Type: application/json" \
+  --data-binary @reclip-job.json > reclip-quote.json
+MAX_CREDITS=$(jq -er '.maximum_credits' reclip-job.json)
+jq -e --argjson cap "$MAX_CREDITS" \
+  '.affordable and (.estimated_credits <= $cap)' reclip-quote.json > /dev/null
+JOB_ID=$(curl --fail-with-body -sS "$BASE/jobs" \
+  -H "Authorization: Bearer $RECLIP_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: $RECLIP_REQUEST_ID" \
+  --data-binary @reclip-job.json | jq -er '.id')
+curl --fail-with-body -sS "$BASE/jobs/$JOB_ID" \
+  -H "Authorization: Bearer $RECLIP_API_KEY"
+```
+
+```python Python
+import json
+import os
+from urllib.request import Request, urlopen
+
+base = "https://www.reclip.io/api/v1"
+with open("reclip-job.json") as source:
+    payload = json.load(source)
+
+def call(path, body=None, request_id=None):
+    headers = {"Authorization": f"Bearer {os.environ['RECLIP_API_KEY']}"}
+    if body is not None:
+        headers["Content-Type"] = "application/json"
+    if request_id:
+        headers["Idempotency-Key"] = request_id
+    request = Request(base + path, headers=headers,
+                      data=None if body is None else json.dumps(body).encode())
+    with urlopen(request, timeout=30) as response:
+        return json.load(response)
+
+quote = call("/jobs/quote", payload)
+if not quote["affordable"] or quote["estimated_credits"] > payload["maximum_credits"]:
+    raise RuntimeError("Quote exceeds available credits or the selected cap")
+job = call("/jobs", payload, os.environ["RECLIP_REQUEST_ID"])
+print(json.dumps(call(f"/jobs/{job['id']}"), indent=2))
+```
+
+```javascript JavaScript
+import { readFile } from "node:fs/promises";
+
+const base = "https://www.reclip.io/api/v1";
+const apiKey = process.env.RECLIP_API_KEY;
+const requestId = process.env.RECLIP_REQUEST_ID;
+if (!apiKey || !requestId) throw new Error("Set API key and request ID");
+const payload = JSON.parse(await readFile("reclip-job.json", "utf8"));
+
+async function call(path, body, id) {
+  const response = await fetch(base + path, {
+    method: body ? "POST" : "GET",
+    signal: AbortSignal.timeout(30000),
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      ...(body ? { "Content-Type": "application/json" } : {}),
+      ...(id ? { "Idempotency-Key": id } : {}),
+    },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+  if (!response.ok) throw new Error(await response.text());
+  return response.json();
+}
+
+const quote = await call("/jobs/quote", payload);
+if (!quote.affordable || quote.estimated_credits > payload.maximum_credits) {
+  throw new Error("Quote exceeds available credits or the selected cap");
+}
+const job = await call("/jobs", payload, requestId);
+console.log(await call(`/jobs/${job.id}`));
+```
+</CodeGroup>
+
+The cURL example requires `jq`; the Python example uses only the standard library. JavaScript runs on a trusted Node.js server or local environment. A quote is an estimate, not a price lock. The request's `maximum_credits` cap is enforced when a job is admitted. The final GET checks status once; continue polling that same job with backoff until `succeeded`, `failed`, or `canceled`. Do not resubmit a job simply because it is still processing.
+
+## Results and additional processing
+
+Read the completed job's outputs for the downloaded TikTok video asset. A compatible output asset can become input to a separate transcription, AI clipping, or editing request.
+
+Import an owned TikTok video into your media library. Use the TikTok Transcript API for an existing caption track, or the general Video Transcription API with the imported asset when speech recognition is needed.
+
+Use the [job lifecycle guide](/concepts/jobs) to inspect job status and the [asset guide](/concepts/assets) to retrieve a retained output. Signed download URLs are temporary; keep the asset ID when you need to process the file again.
+
+## Use TikTok Video Downloader from MCP
+
+Connect your client with the [MCP setup guide](/guides/mcp). Discover the live schema, quote with `reclip_quote_job`, submit with `reclip_video_downloader`, and poll with `reclip_get_job`. Product tool calls require `input`, `maximum_credits`, and `idempotency_key`; the resource quote tool accepts its request under `body`.
+
+Example prompt:
+
+> Inspect Reclip video_downloader and quote importing this TikTok video: [TikTok URL], with platform tiktok and a download size cap. Show the quote first. Once I approve a credit budget, use reclip_video_downloader and return the completed video asset.
+
+Keep API keys in your client's private environment or protected settings. This operation processes supported source media; it does not post videos to a social network.
+
+## Related API documentation
+
+- [TikTok Video Downloader API overview](https://www.reclip.io/api/tools/tiktok-video-downloader)
+- [All TikTok video APIs](https://www.reclip.io/platforms/tiktok)
+- [General video downloader tool schema](/tools/video-downloader)
+- [Platform API support comparison](/guides/platforms)

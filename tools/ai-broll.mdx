@@ -9,13 +9,20 @@ Add relevant AI images, AI video, or stock footage to your video.
 
 Submit `POST /jobs` with `tool: "ai_broll"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
 
-Required plan tier: **starter**. API access additionally requires an active paid subscription.
+Available on **starter** plans or with sufficient API credits. API work can use API-only promotional credits or shared workspace credits, including purchased credits without a subscription.
 
 | Input field | Required | Type | Details |
 |---|---|---|---|
 | `asset_id` | No | string | See the full schema below. |
 | `source_url` | No | string | See the full schema below. |
 | `options` | Yes | object | See the full schema below. |
+
+## Platform-specific API guides
+
+- [YouTube AI B-Roll API](/platforms/youtube-ai-broll)
+- [Twitch VOD AI B-Roll API](/platforms/twitch-vod-ai-broll)
+
+These guides use this same tool contract with platform-specific source inputs. See [all supported platform APIs](/guides/platforms).
 
 ## Complete input schema
 

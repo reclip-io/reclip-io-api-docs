@@ -22,5 +22,14 @@ Public beta. API access requires an active paid workspace. Base: https://www.rec
 - [Changelog](changelog.mdx): Changes to the public API contract.
 - [API reference](api-reference.mdx): REST resources, media tools, and machine-readable contracts.
 - [Install the Reclip skill](guides/install-skill.mdx): Install a portable media-workflow skill with a dependency-free Python client.
+- [YouTube, TikTok, Instagram and Twitch APIs](guides/platforms.mdx): Choose a video download, transcript, clipping, captions, or B-roll API for a supported source platform.
+- [YouTube Video Downloader API](platforms/youtube-video-downloader.mdx): Download supported YouTube videos and Shorts with a REST API or MCP tool. Select source formats, cap download size, and retrieve the video asset.
+- [TikTok Video Downloader API](platforms/tiktok-video-downloader.mdx): Download supported TikTok video URLs through REST or MCP. Set a download limit and retrieve a workspace video asset for archiving or later edits.
+- [Instagram Video Downloader API](platforms/instagram-video-downloader.mdx): Download supported Instagram videos and Reels with REST or MCP. Import an accessible Reel URL and retrieve its video asset for additional processing.
+- [YouTube Video Clipping API](platforms/youtube-ai-clipper.mdx): Create short video clips from supported YouTube URLs. Configure an analysis range, captions, and video layout through the AI Clipper REST API or MCP tool.
+- [Twitch VOD Clipping API](platforms/twitch-vod-clipper.mdx): Create video highlights from recorded Twitch VOD URLs. Select a recorded segment and configure AI clipping through REST or MCP.
+- [YouTube AI B-Roll API](platforms/youtube-ai-broll.mdx): Add AI image, AI video, or stock B-roll to a selected YouTube video segment. Submit a supported YouTube URL through REST or MCP.
+- [Twitch VOD AI B-Roll API](platforms/twitch-vod-ai-broll.mdx): Add supporting image, video, or stock B-roll to recorded Twitch commentary. Process a selected Twitch VOD segment through REST or MCP.
+- [YouTube Video Captions API](platforms/youtube-ai-captions.mdx): Generate and render styled captions on a supported YouTube video. Configure caption appearance and a source duration through REST or MCP.
 - [OpenAPI](openapi/reclip-v1.json)
 - [Skill](skills/reclip/SKILL.md)

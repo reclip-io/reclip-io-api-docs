@@ -1,0 +1,152 @@
+---
+title: "YouTube Video Downloader API"
+description: "Download supported YouTube videos and Shorts with a REST API or MCP tool. Select source formats, cap download size, and retrieve the video asset."
+---
+
+Download supported YouTube videos and Shorts with a REST API or MCP tool. Select source formats, cap download size, and retrieve the video asset.
+
+<Info>Public beta. This guide uses the existing `video_downloader` tool with `POST /api/v1/jobs`. Platform-specific guides share the same workspace API keys, credit balance, and REST/MCP contracts.</Info>
+
+## Supported YouTube source
+
+Use an accessible HTTPS YouTube video or Shorts URL. The downloader checks that source_url belongs to youtube.com or youtu.be and that platform is youtube. Replace the example video ID with your own authorized source.
+
+Private, restricted, removed, or otherwise unavailable videos may fail. This API does not bypass source access controls and does not publish videos to a YouTube channel.
+
+## Configure the request
+
+Inspect GET /tools/video_downloader/catalog before selecting a source format. format_id may be null for default selection; a discovered format can include format_height and format_size_bytes. Available resolutions and audio depend on the source. maximum_download_bytes bounds the import; it does not promise a particular quality or file size.
+
+Inspect `GET /api/v1/tools/video_downloader/catalog` for the current schema and supported options. Replace the example source URL and use a credit cap that you have approved for this job.
+
+```json
+{
+  "tool": "video_downloader",
+  "input": {
+    "source_url": "https://www.youtube.com/watch?v=VIDEO_ID_01",
+    "platform": "youtube",
+    "file_name": "youtube-video.mp4",
+    "format_id": null,
+    "maximum_download_bytes": 100000000,
+    "has_audio": null,
+    "source_title": null,
+    "source_creator": null,
+    "source_thumbnail_url": null,
+    "source_duration_seconds": null
+  },
+  "maximum_credits": 100
+}
+```
+
+## Quote, submit, and check the job
+
+Save the JSON request above as `reclip-job.json`. Set `RECLIP_API_KEY` and a unique `RECLIP_REQUEST_ID` in your environment, then run one client example. Reuse the same request ID only when retrying the same submission. These examples quote before submitting and stop if the estimate is unaffordable or exceeds the selected credit cap.
+
+<CodeGroup>
+```bash cURL
+set -e
+: "${RECLIP_API_KEY:?Set your workspace API key}"
+: "${RECLIP_REQUEST_ID:?Set a unique ID for this job}"
+BASE="https://www.reclip.io/api/v1"
+curl --fail-with-body -sS "$BASE/jobs/quote" \
+  -H "Authorization: Bearer $RECLIP_API_KEY" \
+  -H "Content-Type: application/json" \
+  --data-binary @reclip-job.json > reclip-quote.json
+MAX_CREDITS=$(jq -er '.maximum_credits' reclip-job.json)
+jq -e --argjson cap "$MAX_CREDITS" \
+  '.affordable and (.estimated_credits <= $cap)' reclip-quote.json > /dev/null
+JOB_ID=$(curl --fail-with-body -sS "$BASE/jobs" \
+  -H "Authorization: Bearer $RECLIP_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: $RECLIP_REQUEST_ID" \
+  --data-binary @reclip-job.json | jq -er '.id')
+curl --fail-with-body -sS "$BASE/jobs/$JOB_ID" \
+  -H "Authorization: Bearer $RECLIP_API_KEY"
+```
+
+```python Python
+import json
+import os
+from urllib.request import Request, urlopen
+
+base = "https://www.reclip.io/api/v1"
+with open("reclip-job.json") as source:
+    payload = json.load(source)
+
+def call(path, body=None, request_id=None):
+    headers = {"Authorization": f"Bearer {os.environ['RECLIP_API_KEY']}"}
+    if body is not None:
+        headers["Content-Type"] = "application/json"
+    if request_id:
+        headers["Idempotency-Key"] = request_id
+    request = Request(base + path, headers=headers,
+                      data=None if body is None else json.dumps(body).encode())
+    with urlopen(request, timeout=30) as response:
+        return json.load(response)
+
+quote = call("/jobs/quote", payload)
+if not quote["affordable"] or quote["estimated_credits"] > payload["maximum_credits"]:
+    raise RuntimeError("Quote exceeds available credits or the selected cap")
+job = call("/jobs", payload, os.environ["RECLIP_REQUEST_ID"])
+print(json.dumps(call(f"/jobs/{job['id']}"), indent=2))
+```
+
+```javascript JavaScript
+import { readFile } from "node:fs/promises";
+
+const base = "https://www.reclip.io/api/v1";
+const apiKey = process.env.RECLIP_API_KEY;
+const requestId = process.env.RECLIP_REQUEST_ID;
+if (!apiKey || !requestId) throw new Error("Set API key and request ID");
+const payload = JSON.parse(await readFile("reclip-job.json", "utf8"));
+
+async function call(path, body, id) {
+  const response = await fetch(base + path, {
+    method: body ? "POST" : "GET",
+    signal: AbortSignal.timeout(30000),
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      ...(body ? { "Content-Type": "application/json" } : {}),
+      ...(id ? { "Idempotency-Key": id } : {}),
+    },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+  if (!response.ok) throw new Error(await response.text());
+  return response.json();
+}
+
+const quote = await call("/jobs/quote", payload);
+if (!quote.affordable || quote.estimated_credits > payload.maximum_credits) {
+  throw new Error("Quote exceeds available credits or the selected cap");
+}
+const job = await call("/jobs", payload, requestId);
+console.log(await call(`/jobs/${job.id}`));
+```
+</CodeGroup>
+
+The cURL example requires `jq`; the Python example uses only the standard library. JavaScript runs on a trusted Node.js server or local environment. A quote is an estimate, not a price lock. The request's `maximum_credits` cap is enforced when a job is admitted. The final GET checks status once; continue polling that same job with backoff until `succeeded`, `failed`, or `canceled`. Do not resubmit a job simply because it is still processing.
+
+## Results and additional processing
+
+A successful job provides a downloaded video asset in outputs. Keep the asset ID for compatible transcription, clipping, captioning, or editing requests. These are separate jobs with their own credit quotes.
+
+Archive an authorized YouTube episode or Short, then pass the retained video asset to another media API. To retrieve existing text captions instead of a video file, use the YouTube Transcript API.
+
+Use the [job lifecycle guide](/concepts/jobs) to inspect job status and the [asset guide](/concepts/assets) to retrieve a retained output. Signed download URLs are temporary; keep the asset ID when you need to process the file again.
+
+## Use YouTube Video Downloader from MCP
+
+Connect your client with the [MCP setup guide](/guides/mcp). Discover the live schema, quote with `reclip_quote_job`, submit with `reclip_video_downloader`, and poll with `reclip_get_job`. Product tool calls require `input`, `maximum_credits`, and `idempotency_key`; the resource quote tool accepts its request under `body`.
+
+Example prompt:
+
+> Use Reclip to quote downloading this YouTube video: [YouTube URL]. Inspect video_downloader's input schema and set platform to youtube. Show the estimate and request a credit budget. After approval, call reclip_video_downloader, poll the returned job, and provide its video output.
+
+Keep API keys in your client's private environment or protected settings. This operation processes supported source media; it does not post videos to a social network.
+
+## Related API documentation
+
+- [YouTube Video Downloader API overview](https://www.reclip.io/api/tools/youtube-video-downloader)
+- [All YouTube video APIs](https://www.reclip.io/platforms/youtube)
+- [General video downloader tool schema](/tools/video-downloader)
+- [Platform API support comparison](/guides/platforms)

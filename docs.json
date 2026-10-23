@@ -68,7 +68,8 @@
               "guides/install-skill",
               "guides/mcp",
               "guides/new-tools",
-              "guides/retries"
+              "guides/retries",
+              "guides/platforms"
             ]
           },
           {
@@ -150,6 +151,19 @@
               "tools/video-trimmer",
               "tools/video-to-gif",
               "tools/transcription"
+            ]
+          },
+          {
+            "group": "Platform APIs",
+            "pages": [
+              "platforms/youtube-video-downloader",
+              "platforms/tiktok-video-downloader",
+              "platforms/instagram-video-downloader",
+              "platforms/youtube-ai-clipper",
+              "platforms/twitch-vod-clipper",
+              "platforms/youtube-ai-broll",
+              "platforms/twitch-vod-ai-broll",
+              "platforms/youtube-ai-captions"
             ]
           }
         ]

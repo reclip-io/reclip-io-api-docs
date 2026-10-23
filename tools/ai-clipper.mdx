@@ -9,13 +9,20 @@ Find and render the strongest clips from long videos.
 
 Submit `POST /jobs` with `tool: "ai_clipper"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
 
-Required plan tier: **free**. API access additionally requires an active paid subscription.
+Available on **free** plans or with sufficient API credits. API work can use API-only promotional credits or shared workspace credits, including purchased credits without a subscription.
 
 | Input field | Required | Type | Details |
 |---|---|---|---|
 | `asset_id` | No | string | See the full schema below. |
 | `source_url` | No | string | See the full schema below. |
 | `options` | Yes | object | See the full schema below. |
+
+## Platform-specific API guides
+
+- [YouTube Video Clipping API](/platforms/youtube-ai-clipper)
+- [Twitch VOD Clipping API](/platforms/twitch-vod-clipper)
+
+These guides use this same tool contract with platform-specific source inputs. See [all supported platform APIs](/guides/platforms).
 
 ## Complete input schema
 

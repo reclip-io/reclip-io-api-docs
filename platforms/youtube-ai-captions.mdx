@@ -1,0 +1,158 @@
+---
+title: "YouTube Video Captions API"
+description: "Generate and render styled captions on a supported YouTube video. Configure caption appearance and a source duration through REST or MCP."
+---
+
+Generate and render styled captions on a supported YouTube video. Configure caption appearance and a source duration through REST or MCP.
+
+<Info>Public beta. This guide uses the existing `ai_captions` tool with `POST /api/v1/jobs`. Platform-specific guides share the same workspace API keys, credit balance, and REST/MCP contracts.</Info>
+
+## Supported YouTube source
+
+Supply a supported YouTube source_url and omit asset_id. Direct URL input is YouTube-only. Provide duration_seconds for the source or selected range as required by the tool schema; the example describes a 60-second source.
+
+The maximum supported source duration is two hours. TikTok, Instagram, and Twitch URLs are not direct AI Captions inputs; compatible uploaded video assets use the general captions contract instead. This API does not upload subtitles to a YouTube channel.
+
+## Configure the request
+
+options.caption_style configures text appearance, including font family, size, vertical position, base and highlight colors, outline, and background. Read the live schema for supported language, translation, and range settings. Keep the duration and range consistent with the actual video.
+
+Inspect `GET /api/v1/tools/ai_captions/catalog` for the current schema and supported options. Replace the example source URL and use a credit cap that you have approved for this job.
+
+```json
+{
+  "tool": "ai_captions",
+  "input": {
+    "source_url": "https://www.youtube.com/watch?v=VIDEO_ID_01",
+    "duration_seconds": 60,
+    "options": {
+      "caption_style": {
+        "font_family": "Inter",
+        "font_size": 64,
+        "position_y_percent": 75,
+        "base_color": "#FFFFFF",
+        "highlight_color": "#FFFF00",
+        "outline_color": "#000000",
+        "outline_width": 4,
+        "background_color": "#000000",
+        "background_opacity": 0,
+        "word_spacing": 0
+      }
+    }
+  },
+  "maximum_credits": 100
+}
+```
+
+## Quote, submit, and check the job
+
+Save the JSON request above as `reclip-job.json`. Set `RECLIP_API_KEY` and a unique `RECLIP_REQUEST_ID` in your environment, then run one client example. Reuse the same request ID only when retrying the same submission. These examples quote before submitting and stop if the estimate is unaffordable or exceeds the selected credit cap.
+
+<CodeGroup>
+```bash cURL
+set -e
+: "${RECLIP_API_KEY:?Set your workspace API key}"
+: "${RECLIP_REQUEST_ID:?Set a unique ID for this job}"
+BASE="https://www.reclip.io/api/v1"
+curl --fail-with-body -sS "$BASE/jobs/quote" \
+  -H "Authorization: Bearer $RECLIP_API_KEY" \
+  -H "Content-Type: application/json" \
+  --data-binary @reclip-job.json > reclip-quote.json
+MAX_CREDITS=$(jq -er '.maximum_credits' reclip-job.json)
+jq -e --argjson cap "$MAX_CREDITS" \
+  '.affordable and (.estimated_credits <= $cap)' reclip-quote.json > /dev/null
+JOB_ID=$(curl --fail-with-body -sS "$BASE/jobs" \
+  -H "Authorization: Bearer $RECLIP_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: $RECLIP_REQUEST_ID" \
+  --data-binary @reclip-job.json | jq -er '.id')
+curl --fail-with-body -sS "$BASE/jobs/$JOB_ID" \
+  -H "Authorization: Bearer $RECLIP_API_KEY"
+```
+
+```python Python
+import json
+import os
+from urllib.request import Request, urlopen
+
+base = "https://www.reclip.io/api/v1"
+with open("reclip-job.json") as source:
+    payload = json.load(source)
+
+def call(path, body=None, request_id=None):
+    headers = {"Authorization": f"Bearer {os.environ['RECLIP_API_KEY']}"}
+    if body is not None:
+        headers["Content-Type"] = "application/json"
+    if request_id:
+        headers["Idempotency-Key"] = request_id
+    request = Request(base + path, headers=headers,
+                      data=None if body is None else json.dumps(body).encode())
+    with urlopen(request, timeout=30) as response:
+        return json.load(response)
+
+quote = call("/jobs/quote", payload)
+if not quote["affordable"] or quote["estimated_credits"] > payload["maximum_credits"]:
+    raise RuntimeError("Quote exceeds available credits or the selected cap")
+job = call("/jobs", payload, os.environ["RECLIP_REQUEST_ID"])
+print(json.dumps(call(f"/jobs/{job['id']}"), indent=2))
+```
+
+```javascript JavaScript
+import { readFile } from "node:fs/promises";
+
+const base = "https://www.reclip.io/api/v1";
+const apiKey = process.env.RECLIP_API_KEY;
+const requestId = process.env.RECLIP_REQUEST_ID;
+if (!apiKey || !requestId) throw new Error("Set API key and request ID");
+const payload = JSON.parse(await readFile("reclip-job.json", "utf8"));
+
+async function call(path, body, id) {
+  const response = await fetch(base + path, {
+    method: body ? "POST" : "GET",
+    signal: AbortSignal.timeout(30000),
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      ...(body ? { "Content-Type": "application/json" } : {}),
+      ...(id ? { "Idempotency-Key": id } : {}),
+    },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+  if (!response.ok) throw new Error(await response.text());
+  return response.json();
+}
+
+const quote = await call("/jobs/quote", payload);
+if (!quote.affordable || quote.estimated_credits > payload.maximum_credits) {
+  throw new Error("Quote exceeds available credits or the selected cap");
+}
+const job = await call("/jobs", payload, requestId);
+console.log(await call(`/jobs/${job.id}`));
+```
+</CodeGroup>
+
+The cURL example requires `jq`; the Python example uses only the standard library. JavaScript runs on a trusted Node.js server or local environment. A quote is an estimate, not a price lock. The request's `maximum_credits` cap is enforced when a job is admitted. The final GET checks status once; continue polling that same job with backoff until `succeeded`, `failed`, or `canceled`. Do not resubmit a job simply because it is still processing.
+
+## Results and additional processing
+
+Inspect the completed job's outputs for its captioned video asset. This operation renders captions into video; it does not simply retrieve a pre-existing YouTube caption track.
+
+Prepare a captioned YouTube excerpt with word highlighting and a consistent visual style. Use YouTube Transcript for caption-text retrieval when a transcript file is the only output you need.
+
+Use the [job lifecycle guide](/concepts/jobs) to inspect job status and the [asset guide](/concepts/assets) to retrieve a retained output. Signed download URLs are temporary; keep the asset ID when you need to process the file again.
+
+## Use YouTube Video Captions from MCP
+
+Connect your client with the [MCP setup guide](/guides/mcp). Discover the live schema, quote with `reclip_quote_job`, submit with `reclip_ai_captions`, and poll with `reclip_get_job`. Product tool calls require `input`, `maximum_credits`, and `idempotency_key`; the resource quote tool accepts its request under `body`.
+
+Example prompt:
+
+> Inspect reclip_ai_captions and quote styled captions for this 60-second YouTube video: [YouTube URL]. Show the font, highlight, and caption-position settings with the credit estimate. After I approve the budget, submit and return the completed captioned video.
+
+Keep API keys in your client's private environment or protected settings. This operation processes supported source media; it does not post videos to a social network.
+
+## Related API documentation
+
+- [YouTube Video Captions API overview](https://www.reclip.io/api/tools/youtube-ai-captions)
+- [All YouTube video APIs](https://www.reclip.io/platforms/youtube)
+- [General ai captions tool schema](/tools/ai-captions)
+- [Platform API support comparison](/guides/platforms)

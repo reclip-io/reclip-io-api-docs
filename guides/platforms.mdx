@@ -1,0 +1,40 @@
+---
+title: "YouTube, TikTok, Instagram and Twitch APIs"
+description: "Choose a video download, transcript, clipping, captions, or B-roll API for a supported source platform."
+---
+
+Choose a guide for the exact source platform and media operation you need. These are **10 supported platform/tool combinations across six tools**, using the same REST job endpoint and existing MCP tool names. The product catalog still contains 30 video, audio, and image tools.
+
+| Source platform | API guide | Existing tool |
+|---|---|---|
+| YouTube | [YouTube Video Downloader API](/platforms/youtube-video-downloader) | `video_downloader` |
+| TikTok | [TikTok Video Downloader API](/platforms/tiktok-video-downloader) | `video_downloader` |
+| Instagram | [Instagram Video Downloader API](/platforms/instagram-video-downloader) | `video_downloader` |
+| YouTube | [YouTube Video Clipping API](/platforms/youtube-ai-clipper) | `ai_clipper` |
+| Twitch | [Twitch VOD Clipping API](/platforms/twitch-vod-clipper) | `ai_clipper` |
+| YouTube | [YouTube AI B-Roll API](/platforms/youtube-ai-broll) | `ai_broll` |
+| Twitch | [Twitch VOD AI B-Roll API](/platforms/twitch-vod-ai-broll) | `ai_broll` |
+| YouTube | [YouTube Video Captions API](/platforms/youtube-ai-captions) | `ai_captions` |
+| YouTube | [YouTube Transcript API](/tools/youtube-transcript) | `youtube_transcript` |
+| TikTok | [TikTok Transcript API](/tools/tiktok-transcript) | `tiktok_transcript` |
+
+## Direct video URL support
+
+- **YouTube:** video downloading, existing transcript retrieval, AI clipping, AI captions, and AI B-roll.
+- **TikTok:** video downloading and existing transcript retrieval.
+- **Instagram:** video and Reel downloading.
+- **Twitch:** AI clipping and AI B-roll for recorded VOD URLs with a numeric `/videos/` ID.
+
+Transcript extraction requires an available caption track; it does not fall back to speech recognition. Use [Video Transcription](/tools/transcription) with a compatible workspace video asset when you need speech-to-text. Twitch channel pages, live stream capture, and Twitch clip URLs are outside the direct VOD input contract.
+
+## Use the same job API
+
+The REST base URL is `https://www.reclip.io/api/v1`. Inspect `GET /tools/{tool}/catalog`, quote the request with `POST /jobs/quote`, submit it with `POST /jobs`, and poll `GET /jobs/{id}`. Supply a unique idempotency key and an approved credit cap. The downloader requires a matching `platform` value; clipping, captions, and B-roll determine the source from `source_url`.
+
+Each guide includes a platform-specific JSON payload, cURL/Python/JavaScript clients, source limitations, expected outputs, and an MCP prompt using the existing tool name. See [MCP setup](/guides/mcp) to connect an AI client.
+
+## Imported assets and output destinations
+
+Other editing APIs accept compatible uploaded or previously downloaded assets. For example, import an authorized Instagram video with its downloader, then pass the resulting asset ID to a separately quoted transcription or editing job. This does not add direct Instagram URL support to those tools.
+
+Shorts, Reels, and TikTok can describe intended uses for generated short videos. They do not imply additional source integrations or automatic publishing. The [public platform directory](https://www.reclip.io/platforms) lists the verified direct source capabilities.

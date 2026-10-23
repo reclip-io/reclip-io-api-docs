@@ -9,7 +9,7 @@ Add stylish captions to videos and translate subtitles into another language.
 
 Submit `POST /jobs` with `tool: "ai_captions"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
 
-Required plan tier: **free**. API access additionally requires an active paid subscription.
+Available on **free** plans or with sufficient API credits. API work can use API-only promotional credits or shared workspace credits, including purchased credits without a subscription.
 
 | Input field | Required | Type | Details |
 |---|---|---|---|
@@ -19,6 +19,12 @@ Required plan tier: **free**. API access additionally requires an active paid su
 | `start_seconds` | Yes | number | See the full schema below. |
 | `end_seconds` | No | number | See the full schema below. |
 | `options` | Yes | object | See the full schema below. |
+
+## Platform-specific API guides
+
+- [YouTube Video Captions API](/platforms/youtube-ai-captions)
+
+These guides use this same tool contract with platform-specific source inputs. See [all supported platform APIs](/guides/platforms).
 
 ## Complete input schema
 

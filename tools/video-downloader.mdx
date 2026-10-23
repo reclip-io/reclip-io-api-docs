@@ -9,7 +9,7 @@ Download videos from supported social platforms with a paid plan.
 
 Submit `POST /jobs` with `tool: "video_downloader"`. Put these tool fields inside `input`, except nested `options`, which may be supplied at the request top level. Both forms are accepted, but do not supply options twice.
 
-Required plan tier: **starter**. API access additionally requires an active paid subscription.
+Available on **starter** plans or with sufficient API credits. API work can use API-only promotional credits or shared workspace credits, including purchased credits without a subscription.
 
 | Input field | Required | Type | Details |
 |---|---|---|---|
@@ -25,6 +25,14 @@ Required plan tier: **starter**. API access additionally requires an active paid
 | `source_creator` | Yes | union | See the full schema below. |
 | `source_thumbnail_url` | Yes | union | See the full schema below. |
 | `source_duration_seconds` | Yes | union | See the full schema below. |
+
+## Platform-specific API guides
+
+- [YouTube Video Downloader API](/platforms/youtube-video-downloader)
+- [TikTok Video Downloader API](/platforms/tiktok-video-downloader)
+- [Instagram Video Downloader API](/platforms/instagram-video-downloader)
+
+These guides use this same tool contract with platform-specific source inputs. See [all supported platform APIs](/guides/platforms).
 
 ## Complete input schema
 
